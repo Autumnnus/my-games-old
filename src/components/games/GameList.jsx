@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { FaPen } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import {
   collection,
@@ -8,16 +9,25 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import CreateNewGame from "../modal/CreateNewGame";
+import { modalFunc } from "../../redux/modalSlice";
 
 const GameList = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const gamesRef = collection(db, "games");
   const [games, setGames] = useState([]);
   const token = useSelector((state) => state.auth.token);
-
-  console.log(JSON.parse(token).uid);
-
+  const modal = useSelector((state) => state.modal.modal);
+  const [gameInfo, setGameInfo] = useState({
+    name: "",
+    gamePhoto: "",
+    score: "0",
+    platform: "",
+    date: "",
+    review: "",
+  });
   useEffect(() => {
     const querryMessages = query(
       gamesRef,
@@ -34,9 +44,30 @@ const GameList = () => {
     return () => unsuscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  console.log(gameInfo);
 
+  const editGameInfo = (index) => {
+    dispatch(modalFunc());
+    setGameInfo({
+      name: games[index].gameName,
+      gamePhoto: games[index].gamePhoto,
+      score: games[index].gameScore,
+      platform: games[index].gamePlatform,
+      date: games[index].gameDate,
+      review: games[index].gameReview,
+    });
+    navigate(`?edit=${games[index].id}`);
+  };
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+      <div>
+        {modal && (
+          <CreateNewGame
+            setGameInfo={setGameInfo}
+            gameInfo={gameInfo}
+          ></CreateNewGame>
+        )}
+      </div>
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <caption className="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white dark:text-white dark:bg-gray-800">
           2023
@@ -50,17 +81,17 @@ const GameList = () => {
             <th scope="col" className="px-6 py-3">
               Oyun
             </th>
-            <th scope="col" className="px-6 py-3">
+            <th scope="col" className="px-6 py-3 text-center">
               Puan
             </th>
-            <th scope="col" className="px-6 py-3">
+            <th scope="col" className="px-6 py-3 text-center">
               Platform
             </th>
-            <th scope="col" className="px-6 py-3">
-              Başlangıç Tarihi
+            <th scope="col" className="px-6 py-3 text-center">
+              SS
             </th>
             <th scope="col" className="px-6 py-3 text-center">
-              Ekran Görüntüleri
+              Başlangıç Tarihi
             </th>
             <th scope="col" className="px-6 py-3">
               İnceleme
@@ -95,14 +126,20 @@ const GameList = () => {
               </th>
               <td className="px-6 py-4 text-center">{game.gameScore}/10</td>
               <td className="px-6 py-4 text-center">{game.gamePlatform}</td>
-              <td className="px-6 py-4">
-                {game.gameDate ? game.gameDate : "Bilinmiyor"}
+              <td className="px-6 py-4 text-center">
+                {game.screenshoots ? game.screenshoots.length : "0"}
+              </td>
+              <td className="px-6 py-4 text-center">
+                {game.gameDate ? game.gameDate : "-"}
               </td>
 
-              <td className="px-6 py-4 text-center">
-                {game.screenshoots?.length}
+              <td className="px-6 py-4 relative">
+                {game.gameReview}
+                <FaPen
+                  className="absolute top-3 right-3 cursor-pointer hover:text-blue-600"
+                  onClick={() => editGameInfo(index)}
+                ></FaPen>
               </td>
-              <td className="px-6 py-4">{game.review}</td>
             </tr>
           ))}
         </tbody>

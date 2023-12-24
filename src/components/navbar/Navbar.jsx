@@ -28,6 +28,11 @@ const Navbar = () => {
       console.error("User is not authenticated. Cannot sign out.");
     }
   };
+
+  const openModal = () => {
+    dispatch(modalFunc());
+    navigate("?create=true");
+  };
   return (
     <nav className="bg-purple-700 p-4 text-white">
       <div className="container mx-auto">
@@ -55,7 +60,7 @@ const Navbar = () => {
             <li className="text-lg hover:bg-yellow-400 hover:rounded-md">
               <CiCirclePlus
                 className="w-10 h-10 cursor-pointer"
-                onClick={() => dispatch(modalFunc())}
+                onClick={openModal}
               ></CiCirclePlus>
             </li>
           </ul>
