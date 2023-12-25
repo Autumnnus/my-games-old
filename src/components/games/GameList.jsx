@@ -11,7 +11,7 @@ import {
 import { db } from "../../config/firebaseConfig";
 import { useDispatch, useSelector } from "react-redux";
 import CreateNewGame from "../modal/Modal";
-import { modalFunc, toggleUserSettingsModal } from "../../redux/modalSlice";
+import { modalFunc } from "../../redux/modalSlice";
 
 const GameList = () => {
   const navigate = useNavigate();
@@ -31,6 +31,7 @@ const GameList = () => {
     platform: "",
     date: "",
     review: "",
+    gameStatus: "Bitirildi",
   });
   useEffect(() => {
     const querryMessages = query(
@@ -58,6 +59,7 @@ const GameList = () => {
       platform: games[index].gamePlatform,
       date: games[index].gameDate,
       review: games[index].gameReview,
+      gameStatus: games[index].gameStatus,
     });
     navigate(`?edit=${games[index].id}`);
   };
@@ -74,19 +76,9 @@ const GameList = () => {
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <caption className="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white dark:text-white dark:bg-gray-800">
           2023
-          <div className="flex justify-between">
-            <p className="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
-              2023 yılı içerisinde oynadığım tüm oyunlar
-            </p>
-            {JSON.parse(token).uid === userPathId && (
-              <p
-                className="hover:text-blue-600 cursor-pointer"
-                onClick={() => dispatch(toggleUserSettingsModal())}
-              >
-                Profili Düzenle
-              </p>
-            )}
-          </div>
+          <p className="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
+            2023 yılı içerisinde oynadığım tüm oyunlar
+          </p>
         </caption>
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
@@ -105,6 +97,9 @@ const GameList = () => {
             </th>
             <th scope="col" className="px-6 py-3 text-center">
               Başlangıç Tarihi
+            </th>
+            <th scope="col" className="px-6 py-3 text-center">
+              Durum
             </th>
             <th scope="col" className="px-6 py-3">
               İnceleme
@@ -153,10 +148,11 @@ const GameList = () => {
               <td className="px-6 py-4 text-center">
                 {game.gameDate ? game.gameDate : "-"}
               </td>
+              <td className="px-6 py-4 text-center">{game.gameStatus}</td>
 
               <td className="px-6 py-4 relative">
                 {game.gameReview}
-                {JSON.parse(token).uid === userPathId && (
+                {token && JSON.parse(token).uid === userPathId && (
                   <FaPen
                     className="absolute top-3 right-3 cursor-pointer hover:text-blue-600"
                     onClick={() => editGameInfo(index)}

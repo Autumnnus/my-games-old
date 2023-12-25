@@ -44,7 +44,10 @@ const UserList = () => {
       );
       const snapshot = await getDocs(querryMessages);
       const gameSizes = snapshot.docs.map((doc) => doc.data().size);
-      return { userId, gameSizes };
+      const finishedGameSizes = snapshot.docs
+        .map((doc) => doc.data())
+        .filter((game) => game.gameStatus === "Bitirildi");
+      return { userId, gameSizes, finishedGameSizes };
     };
 
     const updateUserGameSizes = async () => {
@@ -149,7 +152,14 @@ const UserList = () => {
                     .length
                 }
               </td>
-              <td className="px-6 py-4 text-center">{user.data.name}</td>
+              <td className="px-6 py-4 text-center">
+                {
+                  userGames
+                    .filter((game) => game.userId === user.id)
+                    .map((filteredGame) => filteredGame.finishedGameSizes)
+                    .length
+                }
+              </td>
               <td className="px-6 py-4 text-center">{user.data.name}</td>
             </tr>
           ))}

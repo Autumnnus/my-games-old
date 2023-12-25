@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { CiCirclePlus } from "react-icons/ci";
 import { useDispatch, useSelector } from "react-redux";
 import { modalFunc } from "../../redux/modalSlice";
@@ -10,6 +10,8 @@ import { logoutFunc } from "../../redux/authSlice";
 const Navbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
+  const queryPathname = location.pathname.split("/")[1];
   const token = useSelector((state) => state.auth.token);
   const auth = authFBConfig;
 
@@ -24,6 +26,7 @@ const Navbar = () => {
           console.error(error);
         });
       dispatch(logoutFunc());
+      navigate("/auth");
     } else {
       console.error("User is not authenticated. Cannot sign out.");
     }
@@ -52,29 +55,28 @@ const Navbar = () => {
             My Games
           </div>
           <ul className="flex space-x-5 items-center">
-            <li className="text-lg hover:rounded-md">
-              {token && (
+            {token && queryPathname === "user" && (
+              <li className="text-lg hover:rounded-md">
                 <CiCirclePlus
                   className="w-10 h-10 cursor-pointer"
                   onClick={openModal}
                 ></CiCirclePlus>
-              )}
-            </li>
+              </li>
+            )}
             <li className="text-l hover:rounded-md">
               <FaRegUser
                 className="w-8 h-8 cursor-pointer"
                 onClick={handleUser}
               ></FaRegUser>
             </li>
-
-            <li className="text-l hover:rounded-md">
-              {token && (
+            {token && (
+              <li className="text-l hover:rounded-md">
                 <CiLogout
                   className="w-8 h-8 cursor-pointer"
                   onClick={handleLogout}
                 ></CiLogout>
-              )}
-            </li>
+              </li>
+            )}
           </ul>
         </div>
       </div>
