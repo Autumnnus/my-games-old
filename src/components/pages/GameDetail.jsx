@@ -1,5 +1,6 @@
 import { useLocation } from "react-router-dom";
 import { games } from "../../utils/games";
+import UserSettingsModal from "../modal/UserSettingsModal";
 
 const GameDetail = () => {
   const location = useLocation();

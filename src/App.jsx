@@ -4,6 +4,7 @@ import PageContainer from "./components/container/PageContainer";
 import Navbar from "./components/navbar/Navbar";
 import GameDetail from "./components/pages/GameDetail";
 import Auth from "./components/pages/Auth";
+import User from "./components/pages/User";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <PageContainer>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/user/:id" element={<User />} />
             <Route path="/game/:slug" element={<GameDetail />} />
             <Route path="/auth" element={<Auth />} />
           </Routes>

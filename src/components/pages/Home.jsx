@@ -1,12 +1,10 @@
-import { useSelector } from "react-redux";
-import GameList from "../games/GameList";
+// import { useSelector } from "react-redux";
+import UserList from "../users/UserList";
 
 const Home = () => {
-  const auth = useSelector((state) => state.auth);
-  console.log(auth);
   return (
     <div>
-      <GameList></GameList>
+      <UserList></UserList>
     </div>
   );
 };

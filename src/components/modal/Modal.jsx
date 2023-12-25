@@ -1,5 +1,5 @@
 import { IoIosClose } from "react-icons/io";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { modalFunc } from "../../redux/modalSlice";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -31,10 +31,10 @@ const CreateNewGame = ({ setGameInfo, gameInfo }) => {
   const location = useLocation();
   const docId = location.search.split("=")[1];
   const querySearch = location.search.split("?")[1].split("=")[0];
-  console.log(querySearch);
+  const token = useSelector((state) => state.auth.token);
   const closeModal = () => {
     dispatch(modalFunc());
-    navigate("/");
+    navigate(`/user/${JSON.parse(token).uid}`);
   };
   const onchangeFunc = (e) => {
     setGameInfo((prev) => ({
@@ -42,6 +42,7 @@ const CreateNewGame = ({ setGameInfo, gameInfo }) => {
       [e.target.name]: e.target.value,
     }));
   };
+
   const uploadToFirestore = async () => {
     const gamesRef = collection(db, "games");
     const gameDocRef = doc(gamesRef, docId);
@@ -57,7 +58,6 @@ const CreateNewGame = ({ setGameInfo, gameInfo }) => {
         gameReview: gameInfo.review,
         screenshots: [],
         createdAt: serverTimestamp(),
-        user: authFBConfig.currentUser?.displayName,
         userId: authFBConfig.lastNotifiedUid,
       });
     } else {
@@ -71,7 +71,6 @@ const CreateNewGame = ({ setGameInfo, gameInfo }) => {
           gameReview: gameInfo.review,
           screenshots: [],
           createdAt: serverTimestamp(),
-          user: authFBConfig.currentUser?.displayName,
           userId: authFBConfig.lastNotifiedUid,
         });
       } else if (querySearch === "edit") {

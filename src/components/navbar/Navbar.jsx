@@ -33,6 +33,14 @@ const Navbar = () => {
     dispatch(modalFunc());
     navigate("?create=true");
   };
+
+  const handleUser = () => {
+    if (!token) {
+      navigate("/auth");
+    } else {
+      navigate(`/user/${JSON.parse(token).uid}`);
+    }
+  };
   return (
     <nav className="bg-purple-700 p-4 text-white">
       <div className="container mx-auto">
@@ -43,25 +51,29 @@ const Navbar = () => {
           >
             My Games
           </div>
-          <ul className="flex space-x-5">
-            <li className="text-l hover:bg-yellow-400 hover:rounded-md">
-              {!token ? (
-                <FaRegUser
+          <ul className="flex space-x-5 items-center">
+            <li className="text-lg hover:rounded-md">
+              {token && (
+                <CiCirclePlus
                   className="w-10 h-10 cursor-pointer"
-                  onClick={() => navigate("/auth")}
-                ></FaRegUser>
-              ) : (
+                  onClick={openModal}
+                ></CiCirclePlus>
+              )}
+            </li>
+            <li className="text-l hover:rounded-md">
+              <FaRegUser
+                className="w-8 h-8 cursor-pointer"
+                onClick={handleUser}
+              ></FaRegUser>
+            </li>
+
+            <li className="text-l hover:rounded-md">
+              {token && (
                 <CiLogout
-                  className="w-10 h-10 cursor-pointer"
+                  className="w-8 h-8 cursor-pointer"
                   onClick={handleLogout}
                 ></CiLogout>
               )}
-            </li>
-            <li className="text-lg hover:bg-yellow-400 hover:rounded-md">
-              <CiCirclePlus
-                className="w-10 h-10 cursor-pointer"
-                onClick={openModal}
-              ></CiCirclePlus>
             </li>
           </ul>
         </div>

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authFBConfig } from "../../config/firebaseConfig";
 import { useDispatch } from "react-redux";
-import { authInfo, loginFunc } from "../../redux/authSlice";
+import { authInfo, loginFunc, toggleLoginMode } from "../../redux/authSlice";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -78,6 +78,12 @@ const Login = () => {
             onClick={handleLogin}
           >
             Giriş Yap
+          </button>
+          <button
+            className="w-full bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-300 transition duration-300"
+            onClick={() => dispatch(toggleLoginMode())}
+          >
+            Hesabım Yok
           </button>
         </div>
       </div>
