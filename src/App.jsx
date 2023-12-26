@@ -15,7 +15,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/user/:id" element={<User />} />
-            <Route path="/game/:slug" element={<GameDetail />} />
+            <Route path="/user/:id/game/:slug" element={<GameDetail />} />
             <Route path="/auth" element={<Auth />} />
           </Routes>
         </PageContainer>

@@ -1,6 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = { modal: false, userSettingsModal: false };
+const initialState = {
+  modal: false,
+  userSettingsModal: false,
+  ssModal: false,
+};
 
 const slice = createSlice({
   name: "modelslice",
@@ -12,9 +16,13 @@ const slice = createSlice({
     toggleUserSettingsModal: (state) => {
       state.userSettingsModal = !state.userSettingsModal;
     },
+    toggleSSModal: (state) => {
+      state.ssModal = !state.ssModal;
+    },
   },
 });
 
-export const { modalFunc, toggleUserSettingsModal } = slice.actions;
+export const { modalFunc, toggleUserSettingsModal, toggleSSModal } =
+  slice.actions;
 
 export default slice.reducer;

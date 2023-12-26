@@ -1,8 +1,32 @@
 import PropTypes from "prop-types";
-const WarningModal = ({ deleteFromFirestore, setToggleWarningModal }) => {
+import { useDispatch } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
+import { toggleSSModal } from "../../redux/modalSlice";
+const WarningModal = ({
+  deleteFromFirestore,
+  setToggleWarningModal,
+  deleteSSFromFirestore,
+}) => {
   WarningModal.propTypes = {
     deleteFromFirestore: PropTypes.func.isRequired,
+    deleteSSFromFirestore: PropTypes.func.isRequired,
     setToggleWarningModal: PropTypes.bool.isRequired,
+  };
+
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const searchKey = location.search.split("?")[1].split("=")[0];
+  console.log(searchKey);
+  const deleteFunc = () => {
+    if (searchKey === "editSS") {
+      deleteSSFromFirestore();
+      setToggleWarningModal(false);
+      dispatch(toggleSSModal());
+      navigate(location.pathname);
+    } else {
+      deleteFromFirestore();
+    }
   };
 
   return (
@@ -11,7 +35,7 @@ const WarningModal = ({ deleteFromFirestore, setToggleWarningModal }) => {
         <h1>Oyunu silmek istediğine emin misin?</h1>
         <button
           className="w-full h-10 bg-indigo-600 text-white flex items-center justify-center mt-2 rounded-md border-none"
-          onClick={() => deleteFromFirestore()}
+          onClick={deleteFunc}
         >
           Evet
         </button>

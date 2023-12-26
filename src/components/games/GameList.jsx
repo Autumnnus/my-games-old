@@ -21,7 +21,6 @@ const GameList = () => {
   const gamesRef = collection(db, "games");
   const [games, setGames] = useState([]);
   const token = useSelector((state) => state.auth.token);
-  const users = useSelector((state) => state.auth.users);
   const modal = useSelector((state) => state.modal.modal);
 
   const [gameInfo, setGameInfo] = useState({
@@ -32,6 +31,8 @@ const GameList = () => {
     date: "",
     review: "",
     gameStatus: "Bitirildi",
+    gameTotalTime: "",
+    dateEnd: "",
   });
   useEffect(() => {
     const querryMessages = query(
@@ -60,6 +61,8 @@ const GameList = () => {
       date: games[index].gameDate,
       review: games[index].gameReview,
       gameStatus: games[index].gameStatus,
+      gameTotalTime: games[index].gameTotalTime,
+      dateEnd: games[index].dateEnd,
     });
     navigate(`?edit=${games[index].id}`);
   };
@@ -133,8 +136,7 @@ const GameList = () => {
                 className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
               >
                 <Link
-                  onClick={() => navigate(game.id)}
-                  to={`/game/${game.id}`}
+                  to={`/user/${userPathId}/game/${game.id}`}
                   className="hover:text-blue-600 cursor-pointer"
                 >
                   {game.gameName}

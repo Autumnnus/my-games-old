@@ -28,6 +28,8 @@ const CreateNewGame = ({ setGameInfo, gameInfo }) => {
       date: PropTypes.string,
       review: PropTypes.string,
       gameStatus: PropTypes.string,
+      gameTotalTime: PropTypes.string,
+      dateEnd: PropTypes.string,
     }).isRequired,
   };
   const dispatch = useDispatch();
@@ -37,6 +39,7 @@ const CreateNewGame = ({ setGameInfo, gameInfo }) => {
   const querySearch = location.search.split("?")[1].split("=")[0];
   const [toggleWarningModal, setToggleWarningModal] = useState(false);
   const token = useSelector((state) => state.auth.token);
+
   const closeModal = () => {
     dispatch(modalFunc());
     navigate(`/user/${JSON.parse(token).uid}`);
@@ -62,6 +65,8 @@ const CreateNewGame = ({ setGameInfo, gameInfo }) => {
         gameDate: gameInfo.date,
         gameReview: gameInfo.review,
         gameStatus: gameInfo.gameStatus,
+        gameTotalTime: gameInfo.gameTotalTime,
+        dateEnd: gameInfo.dateEnd,
         screenshots: [],
         createdAt: serverTimestamp(),
         userId: authFBConfig.lastNotifiedUid,
@@ -76,12 +81,13 @@ const CreateNewGame = ({ setGameInfo, gameInfo }) => {
           gameDate: gameInfo.date,
           gameReview: gameInfo.review,
           gameStatus: gameInfo.gameStatus,
+          gameTotalTime: gameInfo.gameTotalTime,
+          dateEnd: gameInfo.dateEnd,
           screenshots: [],
           createdAt: serverTimestamp(),
           userId: authFBConfig.lastNotifiedUid,
         });
       } else if (querySearch === "edit") {
-        console.log("edit");
         await updateDoc(gameDocRef, {
           gameName: gameInfo.name,
           gamePhoto: gameInfo.gamePhoto,
@@ -90,6 +96,8 @@ const CreateNewGame = ({ setGameInfo, gameInfo }) => {
           gameDate: gameInfo.date,
           gameReview: gameInfo.review,
           gameStatus: gameInfo.gameStatus,
+          gameTotalTime: gameInfo.gameTotalTime,
+          dateEnd: gameInfo.dateEnd,
         });
         closeModal();
       } else {
@@ -111,7 +119,6 @@ const CreateNewGame = ({ setGameInfo, gameInfo }) => {
     await deleteDoc(gameDocRef);
     dispatch(modalFunc());
   };
-  console.log(toggleWarningModal);
   return (
     <>
       {toggleWarningModal ? (
@@ -155,15 +162,31 @@ const CreateNewGame = ({ setGameInfo, gameInfo }) => {
               id="gamePhoto"
               onChange={(e) => onchangeFunc(e)}
             />
-            <input
-              className="h-10 w-full border rounded-md p-2 outline-none mt-3"
-              value={gameInfo.platform}
-              type="text"
-              placeholder="Platform (Zorunlu)"
-              name="platform"
-              id="platform"
-              onChange={(e) => onchangeFunc(e)}
-            />
+            <div className="flex items-center mt-3">
+              <label htmlFor="platform" className="mr-2">
+                Platform
+              </label>
+              <select
+                id="platform"
+                name="platform"
+                className="h-10 w-full border rounded-md p-2 outline-none"
+                onChange={(e) => onchangeFunc(e)}
+                value={gameInfo.platform}
+              >
+                <option value="Steam">Steam</option>
+                <option value="Epic Games">Epic Games</option>
+                <option value="Ubisoft">Ubisoft</option>
+                <option value="Xbox(Pc)">Xbox(PC)</option>
+                <option value="EA Games">EA Games</option>
+                <option value="Ubisoft">Ubisoft</option>
+                <option value="Torrent">Torrent</option>
+                <option value="Playstation">Playstation</option>
+                <option value="Xbox Series">Xbox Series</option>
+                <option value="Nintendo">Nintendo</option>
+                <option value="Mobile">Mobile</option>
+                <option value="Diğer Platformlar">Diğer Platformlar</option>
+              </select>
+            </div>
             <div className="flex items-center mt-3">
               <label htmlFor="score" className="mr-2">
                 Puan
@@ -204,6 +227,15 @@ const CreateNewGame = ({ setGameInfo, gameInfo }) => {
                 <option value="Bitirilecek">Bitirilecek</option>
               </select>
             </div>
+            <input
+              className="h-10 w-full border rounded-md p-2 outline-none mt-3"
+              value={gameInfo.gameTotalTime}
+              type="number"
+              placeholder="Toplam Saat (İsteğe Bağlı)"
+              name="gameTotalTime"
+              id="gameTotalTime"
+              onChange={(e) => onchangeFunc(e)}
+            />
             <div className="flex items-center mt-3">
               <label htmlFor="date" className="mr-2">
                 Başlangıç Tarihi
@@ -213,6 +245,19 @@ const CreateNewGame = ({ setGameInfo, gameInfo }) => {
                 type="date"
                 name="date"
                 id="date"
+                className="h-10 w-full border rounded-md p-2 outline-none"
+                onChange={(e) => onchangeFunc(e)}
+              />
+            </div>
+            <div className="flex items-center mt-3">
+              <label htmlFor="date" className="mr-2">
+                Bitiş Tarihi
+              </label>
+
+              <input
+                type="date"
+                name="dateEnd"
+                id="dateEnd"
                 className="h-10 w-full border rounded-md p-2 outline-none"
                 onChange={(e) => onchangeFunc(e)}
               />

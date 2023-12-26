@@ -138,7 +138,6 @@ const UserList = () => {
                 className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
               >
                 <Link
-                  onClick={() => navigate(`user/${user.id}`)}
                   to={`/user/${user.id}`}
                   className="hover:text-blue-600 cursor-pointer"
                 >
