@@ -1,13 +1,8 @@
+//prettier-ignore
+import { collection, onSnapshot, orderBy, query, where, } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { FaPen, FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import {
-  collection,
-  onSnapshot,
-  orderBy,
-  query,
-  where,
-} from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
 import { useDispatch, useSelector } from "react-redux";
 import Modal from "../modal/Modal";
@@ -24,38 +19,37 @@ const GameList = () => {
   const modal = useSelector((state) => state.modal.modal);
   const [filterValue, setFilterValue] = useState("gameDate");
 
-  const [gameInfo, setGameInfo] = useState({
-    name: "",
-    gamePhoto: "",
-    score: "0",
-    platform: "",
-    date: "",
-    review: "",
-    gameStatus: "Bitirildi",
-    gameTotalTime: "",
-    dateEnd: "",
-  });
+  //prettier-ignore
+  const [gameInfo, setGameInfo] = useState({ name: "", gamePhoto: "", score: "0", platform: "", date: "", review: "", gameStatus: "Bitirildi", gameTotalTime: "", dateEnd: "", });
   useEffect(() => {
-    const fieldToOrderBy =
-      filterValue === "oyun"
-        ? "gameName"
-        : filterValue === "puan"
-        ? "gameScore"
-        : filterValue === "platform"
-        ? "gamePlatform"
-        : filterValue === "ss"
-        ? "screenshots"
-        : filterValue === "başlangıç tarihi"
-        ? "gameDate"
-        : filterValue === "durum"
-        ? "gameStatus"
-        : filterValue === "inceleme"
-        ? "gameReview"
-        : "gameDate";
+    let fieldToOrderBy;
+    switch (filterValue) {
+      case "gameName":
+        fieldToOrderBy = "gameName";
+        break;
+      case "gameScore":
+        fieldToOrderBy = "gameScore";
+        break;
+      case "gamePlatform":
+        fieldToOrderBy = "gamePlatform";
+        break;
+      case "screenshots":
+        fieldToOrderBy = "screenshots";
+        break;
+      case "gameDate":
+        fieldToOrderBy = "gameDate";
+        break;
+      case "gameStatus":
+        fieldToOrderBy = "gameStatus";
+        break;
+      case "gameReview":
+        fieldToOrderBy = "gameReview";
+        break;
+      default:
+        fieldToOrderBy = filterValue.slice(1);
+    }
 
     const sortOrder = filterValue.charAt(0) === "-" ? "desc" : "asc";
-
-    console.log(filterValue);
     const querryMessages = query(
       gamesRef,
       where("userId", "==", userPathId),
@@ -120,7 +114,6 @@ const GameList = () => {
     navigate(`?edit=${games[index].id}`);
   };
 
-  console.log(filterValue);
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
       <div>
