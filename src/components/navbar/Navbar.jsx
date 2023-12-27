@@ -12,6 +12,7 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const queryPathname = location.pathname.split("/")[1];
+  const queryPathname2 = location.pathname.split("/")[3];
   const token = useSelector((state) => state.auth.token);
   const auth = authFBConfig;
 
@@ -55,7 +56,7 @@ const Navbar = () => {
             My Games
           </div>
           <ul className="flex space-x-5 items-center">
-            {token && queryPathname === "user" && (
+            {token && queryPathname === "user" && queryPathname2 !== "game" && (
               <li className="text-lg hover:rounded-md">
                 <CiCirclePlus
                   className="w-10 h-10 cursor-pointer"

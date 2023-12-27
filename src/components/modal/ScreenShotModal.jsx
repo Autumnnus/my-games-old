@@ -9,8 +9,8 @@ import { toggleSSModal } from "../../redux/modalSlice";
 import { useState } from "react";
 import WarningModal from "./WarningModal";
 
-const ScreenShootModal = ({ setSSInfo, ssInfo }) => {
-  ScreenShootModal.propTypes = {
+const ScreenShotModal = ({ setSSInfo, ssInfo }) => {
+  ScreenShotModal.propTypes = {
     setSSInfo: PropTypes.func.isRequired,
     ssInfo: PropTypes.shape({
       ssUrl: PropTypes.string,
@@ -54,8 +54,8 @@ const ScreenShootModal = ({ setSSInfo, ssInfo }) => {
         },
       ];
       await updateDoc(gameDocRef, { screenshots: updatedScreenshots });
-      console.log("ScreenShoot Eklendi");
-    } else if (searchKey === "edit") {
+      console.log("ScreenShot Eklendi");
+    } else if (searchKey === "editSS") {
       const updatedScreenshots = gameDoc.data().screenshots.map((ss) =>
         ss.id === searchValue
           ? {
@@ -67,7 +67,7 @@ const ScreenShootModal = ({ setSSInfo, ssInfo }) => {
       );
       await updateDoc(gameDocRef, { screenshots: updatedScreenshots });
       closeModal();
-      console.log("ScreenShoot Düzenlendi");
+      console.log("ScreenShot Düzenlendi");
     } else {
       console.error("Hatalı search query");
     }
@@ -80,23 +80,17 @@ const ScreenShootModal = ({ setSSInfo, ssInfo }) => {
     const gamesRef = collection(db, "games");
     const gameDocRef = doc(gamesRef, gameId);
     const gameDoc = await getDoc(gameDocRef);
-
-    // Eğer belge bulunamazsa veya screenshots boşsa işlemi durdur
     if (!gameDoc.exists() || !gameDoc.data().screenshots) {
       console.log("Belge veya ekran görüntüsü bulunamadı.");
       return;
     }
-
     const updatedScreenshots = gameDoc
       .data()
       .screenshots.filter((ss) => ss.id !== searchValue);
-
-    // Eğer silinecek bir ekran görüntüsü bulunamazsa işlemi durdur
     if (updatedScreenshots.length === gameDoc.data().screenshots.length) {
       console.log("Silinecek ekran görüntüsü bulunamadı.");
       return;
     }
-
     await updateDoc(gameDocRef, { screenshots: updatedScreenshots });
     console.log("Ekran görüntüsü başarıyla silindi");
   };
@@ -167,4 +161,4 @@ const ScreenShootModal = ({ setSSInfo, ssInfo }) => {
   );
 };
 
-export default ScreenShootModal;
+export default ScreenShotModal;

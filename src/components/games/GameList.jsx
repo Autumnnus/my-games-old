@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaPen } from "react-icons/fa";
+import { FaPen, FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   collection,
@@ -10,7 +10,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
 import { useDispatch, useSelector } from "react-redux";
-import CreateNewGame from "../modal/Modal";
+import Modal from "../modal/Modal";
 import { modalFunc } from "../../redux/modalSlice";
 
 const GameList = () => {
@@ -22,6 +22,7 @@ const GameList = () => {
   const [games, setGames] = useState([]);
   const token = useSelector((state) => state.auth.token);
   const modal = useSelector((state) => state.modal.modal);
+  const [filterValue, setFilterValue] = useState("gameDate");
 
   const [gameInfo, setGameInfo] = useState({
     name: "",
@@ -35,10 +36,30 @@ const GameList = () => {
     dateEnd: "",
   });
   useEffect(() => {
+    const fieldToOrderBy =
+      filterValue === "oyun"
+        ? "gameName"
+        : filterValue === "puan"
+        ? "gameScore"
+        : filterValue === "platform"
+        ? "gamePlatform"
+        : filterValue === "ss"
+        ? "screenshots"
+        : filterValue === "başlangıç tarihi"
+        ? "gameDate"
+        : filterValue === "durum"
+        ? "gameStatus"
+        : filterValue === "inceleme"
+        ? "gameReview"
+        : "gameDate";
+
+    const sortOrder = filterValue.charAt(0) === "-" ? "desc" : "asc";
+
+    console.log(filterValue);
     const querryMessages = query(
       gamesRef,
       where("userId", "==", userPathId),
-      orderBy("gameName")
+      orderBy(fieldToOrderBy, sortOrder)
     );
     const unsuscribe = onSnapshot(querryMessages, (snapshot) => {
       const updatedGames = [];
@@ -49,7 +70,39 @@ const GameList = () => {
     });
     return () => unsuscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [filterValue]);
+
+  const filterDatas = (e) => {
+    const clickedValue = e.target.innerText.toLowerCase();
+    setFilterValue((prevFilterValue) => {
+      if (clickedValue === "oyun") {
+        return prevFilterValue === "gameName" ? "-gameName" : "gameName";
+      }
+      if (clickedValue === "puan") {
+        return prevFilterValue === "gameScore" ? "-gameScore" : "gameScore";
+      }
+      if (clickedValue === "platform") {
+        return prevFilterValue === "gamePlatform"
+          ? "-gamePlatform"
+          : "gamePlatform";
+      }
+      if (clickedValue === "ss") {
+        return prevFilterValue === "screenshots"
+          ? "-screenshots"
+          : "screenshots";
+      }
+      if (clickedValue === "başlangiç tarihi") {
+        return prevFilterValue === "gameDate" ? "-gameDate" : "gameDate";
+      }
+      if (clickedValue === "durum") {
+        return prevFilterValue === "gameStatus" ? "-gameStatus" : "gameStatus";
+      }
+      if (clickedValue === "i̇nceleme") {
+        return prevFilterValue === "gameReview" ? "-gameReview" : "gameReview";
+      }
+      return prevFilterValue;
+    });
+  };
 
   const editGameInfo = (index) => {
     dispatch(modalFunc());
@@ -66,15 +119,12 @@ const GameList = () => {
     });
     navigate(`?edit=${games[index].id}`);
   };
+
+  console.log(filterValue);
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
       <div>
-        {modal && (
-          <CreateNewGame
-            setGameInfo={setGameInfo}
-            gameInfo={gameInfo}
-          ></CreateNewGame>
-        )}
+        {modal && <Modal setGameInfo={setGameInfo} gameInfo={gameInfo}></Modal>}
       </div>
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <caption className="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white dark:text-white dark:bg-gray-800">
@@ -86,26 +136,117 @@ const GameList = () => {
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
             <th scope="col" className="px-6 py-3"></th>
-            <th scope="col" className="px-6 py-3">
-              Oyun
+            <th
+              scope="col"
+              className="px-6 py-3 cursor-pointer"
+              onClick={(e) => filterDatas(e)}
+            >
+              <span className="flex items-center space-x-10">
+                Oyun
+                {filterValue === "gameName" ? (
+                  <FaSortDown size={15} />
+                ) : filterValue === "-gameName" ? (
+                  <FaSortUp size={15} />
+                ) : (
+                  <FaSort size={15} />
+                )}
+              </span>
             </th>
-            <th scope="col" className="px-6 py-3 text-center">
-              Puan
+            <th
+              scope="col"
+              className="px-6 py-3 cursor-pointer"
+              onClick={(e) => filterDatas(e)}
+            >
+              <span className="flex items-center space-x-10">
+                Puan
+                {filterValue === "gameScore" ? (
+                  <FaSortDown size={15} />
+                ) : filterValue === "-gameScore" ? (
+                  <FaSortUp size={15} />
+                ) : (
+                  <FaSort size={15} />
+                )}
+              </span>
             </th>
-            <th scope="col" className="px-6 py-3 text-center">
-              Platform
+            <th
+              scope="col"
+              className="px-6 py-3 cursor-pointer"
+              onClick={(e) => filterDatas(e)}
+            >
+              <span className="flex items-center space-x-10">
+                Platform{" "}
+                {filterValue === "gamePlatform" ? (
+                  <FaSortDown size={15} />
+                ) : filterValue === "-gamePlatform" ? (
+                  <FaSortUp size={15} />
+                ) : (
+                  <FaSort size={15} />
+                )}
+              </span>
             </th>
-            <th scope="col" className="px-6 py-3 text-center">
-              SS
+            <th
+              scope="col"
+              className="px-6 py-3 cursor-pointer"
+              onClick={(e) => filterDatas(e)}
+            >
+              <span className="flex items-center space-x-10">
+                SS{" "}
+                {filterValue === "screenshots" ? (
+                  <FaSortDown size={15} />
+                ) : filterValue === "-screenshots" ? (
+                  <FaSortUp size={15} />
+                ) : (
+                  <FaSort size={15} />
+                )}
+              </span>
             </th>
-            <th scope="col" className="px-6 py-3 text-center">
-              Başlangıç Tarihi
+            <th
+              scope="col"
+              className="px-6 py-3 cursor-pointer"
+              onClick={(e) => filterDatas(e)}
+            >
+              <span className="flex items-center space-x-10">
+                Başlangıç Tarihi{" "}
+                {filterValue === "gameDate" ? (
+                  <FaSortDown size={15} />
+                ) : filterValue === "-gameDate" ? (
+                  <FaSortUp size={15} />
+                ) : (
+                  <FaSort size={15} />
+                )}
+              </span>
             </th>
-            <th scope="col" className="px-6 py-3 text-center">
-              Durum
+            <th
+              scope="col"
+              className="px-6 py-3 cursor-pointer"
+              onClick={(e) => filterDatas(e)}
+            >
+              <span className="flex items-center space-x-10">
+                Durum
+                {filterValue === "gameStatus" ? (
+                  <FaSortDown size={15} />
+                ) : filterValue === "-gameStatus" ? (
+                  <FaSortUp size={15} />
+                ) : (
+                  <FaSort size={15} />
+                )}
+              </span>
             </th>
-            <th scope="col" className="px-6 py-3">
-              İnceleme
+            <th
+              scope="col"
+              className="px-6 py-3 cursor-pointer"
+              onClick={(e) => filterDatas(e)}
+            >
+              <span className="flex items-center space-x-10">
+                İnceleme
+                {filterValue === "gameReview" ? (
+                  <FaSortDown size={15} />
+                ) : filterValue === "-gameReview" ? (
+                  <FaSortUp size={15} />
+                ) : (
+                  <FaSort size={15} />
+                )}
+              </span>
             </th>
           </tr>
         </thead>
@@ -142,15 +283,15 @@ const GameList = () => {
                   {game.gameName}
                 </Link>
               </th>
-              <td className="px-6 py-4 text-center">{game.gameScore}/10</td>
-              <td className="px-6 py-4 text-center">{game.gamePlatform}</td>
-              <td className="px-6 py-4 text-center">
-                {game.screenshoots ? game.screenshoots.length : "0"}
+              <td className="px-6 py-4">{game.gameScore}/10</td>
+              <td className="px-6 py-4">{game.gamePlatform}</td>
+              <td className="px-6 py-4">
+                {game.screenshots ? game.screenshots.length : "0"}
               </td>
-              <td className="px-6 py-4 text-center">
+              <td className="px-6 py-4">
                 {game.gameDate ? game.gameDate : "-"}
               </td>
-              <td className="px-6 py-4 text-center">{game.gameStatus}</td>
+              <td className="px-6 py-4">{game.gameStatus}</td>
 
               <td className="px-6 py-4 relative">
                 {game.gameReview}

@@ -1,5 +1,5 @@
 import { IoIosClose } from "react-icons/io";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { modalFunc } from "../../redux/modalSlice";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -17,8 +17,8 @@ import {
 } from "firebase/firestore";
 import WarningModal from "./WarningModal";
 import { useState } from "react";
-const CreateNewGame = ({ setGameInfo, gameInfo }) => {
-  CreateNewGame.propTypes = {
+const Modal = ({ setGameInfo, gameInfo }) => {
+  Modal.propTypes = {
     setGameInfo: PropTypes.func.isRequired,
     gameInfo: PropTypes.shape({
       name: PropTypes.string,
@@ -36,13 +36,12 @@ const CreateNewGame = ({ setGameInfo, gameInfo }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const docId = location.search.split("=")[1];
-  const querySearch = location.search.split("?")[1].split("=")[0];
+
   const [toggleWarningModal, setToggleWarningModal] = useState(false);
-  const token = useSelector((state) => state.auth.token);
 
   const closeModal = () => {
     dispatch(modalFunc());
-    navigate(`/user/${JSON.parse(token).uid}`);
+    navigate(location.pathname);
   };
   const onchangeFunc = (e) => {
     setGameInfo((prev) => ({
@@ -52,6 +51,7 @@ const CreateNewGame = ({ setGameInfo, gameInfo }) => {
   };
 
   const uploadToFirestore = async () => {
+    const querySearch = location.search.split("?")[1].split("=")[0];
     const gamesRef = collection(db, "games");
     const gameDocRef = doc(gamesRef, docId);
     const gamesQuery = query(gamesRef);
@@ -293,4 +293,4 @@ const CreateNewGame = ({ setGameInfo, gameInfo }) => {
   );
 };
 
-export default CreateNewGame;
+export default Modal;

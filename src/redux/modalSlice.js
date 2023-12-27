@@ -4,6 +4,7 @@ const initialState = {
   modal: false,
   userSettingsModal: false,
   ssModal: false,
+  fullSSModal: false,
 };
 
 const slice = createSlice({
@@ -19,10 +20,17 @@ const slice = createSlice({
     toggleSSModal: (state) => {
       state.ssModal = !state.ssModal;
     },
+    togglefullSSModal: (state) => {
+      state.fullSSModal = !state.fullSSModal;
+    },
   },
 });
 
-export const { modalFunc, toggleUserSettingsModal, toggleSSModal } =
-  slice.actions;
+export const {
+  modalFunc,
+  toggleUserSettingsModal,
+  toggleSSModal,
+  togglefullSSModal,
+} = slice.actions;
 
 export default slice.reducer;

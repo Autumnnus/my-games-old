@@ -20,6 +20,7 @@ const UserList = () => {
     photoUrl: "",
   });
   const [userGames, setUserGames] = useState([]);
+  const [userSS, setUserSS] = useState([]);
   const fetchUsers = async () => {
     const usersCollectionRef = collection(db, "users");
     const querySnapshot = await getDocs(usersCollectionRef);
@@ -47,7 +48,10 @@ const UserList = () => {
       const finishedGameSizes = snapshot.docs
         .map((doc) => doc.data())
         .filter((game) => game.gameStatus === "Bitirildi");
-      return { userId, gameSizes, finishedGameSizes };
+      const screenShotSizes = snapshot.docs
+        .map((doc) => doc.data())
+        .map((game) => game.screenshots.length);
+      return { userId, gameSizes, finishedGameSizes, screenShotSizes };
     };
 
     const updateUserGameSizes = async () => {
@@ -59,10 +63,27 @@ const UserList = () => {
       );
       setUserGames(updatedUserGameSizes);
     };
+    const updateUserGameSSSizes = async () => {
+      const updatedUserGameSSSizes = await Promise.all(
+        users.map(async (user) => {
+          const gameSize = await fetchGameSize(user.id);
+          return gameSize;
+        })
+      );
 
+      const test = updatedUserGameSSSizes.map((x) => {
+        const toplam = x.screenShotSizes.reduce(function (acc, current) {
+          return acc + current;
+        }, 0);
+        return toplam;
+      });
+      setUserSS(test);
+    };
     updateUserGameSizes();
+    updateUserGameSSSizes();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [users]);
+  console.log(userGames);
   const openUserSettingsModal = () => {
     dispatch(toggleUserSettingsModal());
     navigate(`?userEdit=${JSON.parse(token).uid}`);
@@ -159,7 +180,7 @@ const UserList = () => {
                     .length
                 }
               </td>
-              <td className="px-6 py-4 text-center">{user.data.name}</td>
+              <td className="px-6 py-4 text-center">{userSS[index]}</td>
             </tr>
           ))}
         </tbody>
