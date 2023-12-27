@@ -84,9 +84,7 @@ const ScreenShotModal = ({ setSSInfo, ssInfo }) => {
       console.log("Belge veya ekran görüntüsü bulunamadı.");
       return;
     }
-    const updatedScreenshots = gameDoc
-      .data()
-      .screenshots.filter((ss) => ss.id !== searchValue);
+    const updatedScreenshots = gameDoc.data().screenshots.filter((ss) => ss.id !== searchValue);
     if (updatedScreenshots.length === gameDoc.data().screenshots.length) {
       console.log("Silinecek ekran görüntüsü bulunamadı.");
       return;
@@ -117,11 +115,7 @@ const ScreenShotModal = ({ setSSInfo, ssInfo }) => {
             </div>
             <div className="flex space-x-5 items-center">
               {searchKey === "editSS" && (
-                <FaRegTrashAlt
-                  className="cursor-pointer"
-                  size={20}
-                  onClick={deleteWarningModal}
-                ></FaRegTrashAlt>
+                <FaRegTrashAlt className="cursor-pointer" size={20} onClick={deleteWarningModal}></FaRegTrashAlt>
               )}
               <IoIosClose
                 className="cursor-pointer bg-red-600 rounded-full text-white hover:bg-red-700"

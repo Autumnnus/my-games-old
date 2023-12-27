@@ -12,13 +12,8 @@ const UserList = () => {
   const navigate = useNavigate();
   const users = useSelector((state) => state.auth.users);
   const token = useSelector((state) => state.auth.token);
-  const userSettingsModal = useSelector(
-    (state) => state.modal.userSettingsModal
-  );
-  const [userInfo, setUserInfo] = useState({
-    name: "",
-    photoUrl: "",
-  });
+  const userSettingsModal = useSelector((state) => state.modal.userSettingsModal);
+  const [userInfo, setUserInfo] = useState({ name: "", photoUrl: "" });
   const [userGames, setUserGames] = useState([]);
   const [userSS, setUserSS] = useState([]);
   const fetchUsers = async () => {
@@ -38,19 +33,13 @@ const UserList = () => {
   useEffect(() => {
     const fetchGameSize = async (userId) => {
       const gamesRef = collection(db, "games");
-      const querryMessages = query(
-        gamesRef,
-        where("userId", "==", userId),
-        orderBy("gameName")
-      );
+      const querryMessages = query(gamesRef, where("userId", "==", userId), orderBy("gameName"));
       const snapshot = await getDocs(querryMessages);
       const gameSizes = snapshot.docs.map((doc) => doc.data().size);
       const finishedGameSizes = snapshot.docs
         .map((doc) => doc.data())
         .filter((game) => game.gameStatus === "Bitirildi");
-      const screenShotSizes = snapshot.docs
-        .map((doc) => doc.data())
-        .map((game) => game.screenshots.length);
+      const screenShotSizes = snapshot.docs.map((doc) => doc.data()).map((game) => game.screenshots.length);
       return { userId, gameSizes, finishedGameSizes, screenShotSizes };
     };
 
@@ -95,21 +84,13 @@ const UserList = () => {
   };
   return (
     <div>
-      {userSettingsModal && (
-        <UserSettingsModal
-          setUserInfo={setUserInfo}
-          userInfo={userInfo}
-        ></UserSettingsModal>
-      )}
+      {userSettingsModal && <UserSettingsModal setUserInfo={setUserInfo} userInfo={userInfo}></UserSettingsModal>}
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <caption className="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white dark:text-white dark:bg-gray-800">
           <div className="flex justify-between">
             <span>Tüm Üyeler</span>
             {token && (
-              <p
-                className="hover:text-blue-600 cursor-pointer"
-                onClick={openUserSettingsModal}
-              >
+              <p className="hover:text-blue-600 cursor-pointer" onClick={openUserSettingsModal}>
                 Profili Düzenle
               </p>
             )}
@@ -134,10 +115,7 @@ const UserList = () => {
         </thead>
         <tbody>
           {users.map((user, index) => (
-            <tr
-              className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-              key={index}
-            >
+            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700" key={index}>
               <td className="px-4 py-4">
                 {user.data.photoUrl === "" ? (
                   <img
@@ -154,30 +132,20 @@ const UserList = () => {
                 )}
               </td>
 
-              <th
-                scope="row"
-                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-              >
-                <Link
-                  to={`/user/${user.id}`}
-                  className="hover:text-blue-600 cursor-pointer"
-                >
+              <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                <Link to={`/user/${user.id}`} className="hover:text-blue-600 cursor-pointer">
                   {user.data.name}
                 </Link>
               </th>
               <td className="px-6 py-4 text-center">
                 {/* {userGames.length} */}
-                {
-                  userGames.find((game) => game.userId === user.id)?.gameSizes
-                    .length
-                }
+                {userGames.find((game) => game.userId === user.id)?.gameSizes.length}
               </td>
               <td className="px-6 py-4 text-center">
                 {
                   userGames
                     .filter((game) => game.userId === user.id)
-                    .map((filteredGame) => filteredGame.finishedGameSizes)
-                    .length
+                    .map((filteredGame) => filteredGame.finishedGameSizes).length
                 }
               </td>
               <td className="px-6 py-4 text-center">{userSS[index]}</td>

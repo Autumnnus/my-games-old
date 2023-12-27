@@ -4,11 +4,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FaPen } from "react-icons/fa";
 import { db } from "../../config/firebaseConfig";
-import {
-  modalFunc,
-  toggleSSModal,
-  togglefullSSModal,
-} from "../../redux/modalSlice";
+import { modalFunc, toggleSSModal, togglefullSSModal } from "../../redux/modalSlice";
 import ScreenShotModal from "../modal/ScreenShotModal";
 import ImageModal from "../modal/ImageModal";
 import Modal from "../modal/Modal";
@@ -54,9 +50,7 @@ const GameDetails = () => {
         id: doc.id,
         data: doc.data(),
       }));
-      const foundTheGame = gamesArray.find(
-        (game) => game.id === location.pathname.split("/")[4]
-      );
+      const foundTheGame = gamesArray.find((game) => game.id === location.pathname.split("/")[4]);
       setGameData(foundTheGame);
     };
     fetchTheGame();
@@ -118,21 +112,16 @@ const GameDetails = () => {
           </p>
           <div className="flex items-center text-gray-700">
             <span className="mr-4">
-              <span className="font-bold">Platform: </span>{" "}
-              {gameData.data.gamePlatform}
+              <span className="font-bold">Platform: </span> {gameData.data.gamePlatform}
             </span>
             <span>
-              <span className="font-bold">Score: </span>{" "}
-              {gameData.data.gameScore}/10
+              <span className="font-bold">Score: </span> {gameData.data.gameScore}/10
             </span>
           </div>
         </div>
       </div>
       {ssModal ? (
-        <ScreenShotModal
-          setSSInfo={setSSInfo}
-          ssInfo={ssInfo}
-        ></ScreenShotModal>
+        <ScreenShotModal setSSInfo={setSSInfo} ssInfo={ssInfo}></ScreenShotModal>
       ) : (
         <button className="bg-gray-700 text-white p-2" onClick={openSSModal}>
           Ekle
@@ -141,12 +130,7 @@ const GameDetails = () => {
       <button className="bg-gray-700 text-white p-2" onClick={editGameInfo}>
         Düzenle
       </button>
-      {fullSSModal && (
-        <ImageModal
-          imgModalUrl={imgModalUrl}
-          imgModalName={imgModalName}
-        ></ImageModal>
-      )}
+      {fullSSModal && <ImageModal imgModalUrl={imgModalUrl} imgModalName={imgModalName}></ImageModal>}
       {modal && <Modal setGameInfo={setGameInfo} gameInfo={gameInfo}></Modal>}
 
       {!fullSSModal && !ssModal && gameData.data.screenshots && (
@@ -160,9 +144,7 @@ const GameDetails = () => {
                   src={screenshot.ssUrl}
                   alt="Geçersiz Url"
                   className="rounded-lg max-h-56 w-full group-hover:opacity-80 transition-opacity duration-300"
-                  onClick={() =>
-                    openImageModal(screenshot.ssUrl, screenshot.ssName)
-                  }
+                  onClick={() => openImageModal(screenshot.ssUrl, screenshot.ssName)}
                 />
 
                 {screenshot.ssName && (

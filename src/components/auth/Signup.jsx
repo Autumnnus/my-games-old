@@ -30,11 +30,7 @@ const Signup = () => {
         console.error("Name is required");
       } else {
         //* AUTH
-        const userCredential = await createUserWithEmailAndPassword(
-          auth,
-          loginInfo.email,
-          loginInfo.password
-        );
+        const userCredential = await createUserWithEmailAndPassword(auth, loginInfo.email, loginInfo.password);
         const user = userCredential.user;
         await updateProfile(user, {
           displayName: loginInfo.username,

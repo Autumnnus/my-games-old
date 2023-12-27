@@ -2,11 +2,7 @@ import PropTypes from "prop-types";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toggleSSModal } from "../../redux/modalSlice";
-const WarningModal = ({
-  deleteFromFirestore,
-  setToggleWarningModal,
-  deleteSSFromFirestore,
-}) => {
+const WarningModal = ({ deleteFromFirestore, setToggleWarningModal, deleteSSFromFirestore }) => {
   WarningModal.propTypes = {
     deleteFromFirestore: PropTypes.func.isRequired,
     deleteSSFromFirestore: PropTypes.func.isRequired,

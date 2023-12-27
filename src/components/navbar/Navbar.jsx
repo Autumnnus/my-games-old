@@ -49,33 +49,21 @@ const Navbar = () => {
     <nav className="bg-purple-700 p-4 text-white">
       <div className="container mx-auto">
         <div className="flex items-center justify-between">
-          <div
-            className=" text-xl font-bold cursor-pointer"
-            onClick={() => navigate("/")}
-          >
+          <div className=" text-xl font-bold cursor-pointer" onClick={() => navigate("/")}>
             My Games
           </div>
           <ul className="flex space-x-5 items-center">
             {token && queryPathname === "user" && queryPathname2 !== "game" && (
               <li className="text-lg hover:rounded-md">
-                <CiCirclePlus
-                  className="w-10 h-10 cursor-pointer"
-                  onClick={openModal}
-                ></CiCirclePlus>
+                <CiCirclePlus className="w-10 h-10 cursor-pointer" onClick={openModal}></CiCirclePlus>
               </li>
             )}
             <li className="text-l hover:rounded-md">
-              <FaRegUser
-                className="w-8 h-8 cursor-pointer"
-                onClick={handleUser}
-              ></FaRegUser>
+              <FaRegUser className="w-8 h-8 cursor-pointer" onClick={handleUser}></FaRegUser>
             </li>
             {token && (
               <li className="text-l hover:rounded-md">
-                <CiLogout
-                  className="w-8 h-8 cursor-pointer"
-                  onClick={handleLogout}
-                ></CiLogout>
+                <CiLogout className="w-8 h-8 cursor-pointer" onClick={handleLogout}></CiLogout>
               </li>
             )}
           </ul>

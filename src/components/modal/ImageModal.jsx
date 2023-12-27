@@ -26,11 +26,7 @@ const ImageModal = ({ imgModalUrl, imgModalName }) => {
           </div>
         </div>
         <div className="relative" style={{ paddingTop: "56.25%" }}>
-          <img
-            src={imgModalUrl}
-            alt=""
-            className="absolute inset-0 w-full h-full object-contain"
-          />
+          <img src={imgModalUrl} alt="" className="absolute inset-0 w-full h-full object-contain" />
         </div>
       </div>
     </div>

@@ -26,11 +26,6 @@ const slice = createSlice({
   },
 });
 
-export const {
-  modalFunc,
-  toggleUserSettingsModal,
-  toggleSSModal,
-  togglefullSSModal,
-} = slice.actions;
+export const { modalFunc, toggleUserSettingsModal, toggleSSModal, togglefullSSModal } = slice.actions;
 
 export default slice.reducer;

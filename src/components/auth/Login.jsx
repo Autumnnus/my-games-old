@@ -19,11 +19,7 @@ const Login = () => {
   const auth = authFBConfig;
   const handleLogin = async () => {
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        loginInfo.email,
-        loginInfo.password
-      );
+      const userCredential = await signInWithEmailAndPassword(auth, loginInfo.email, loginInfo.password);
       const user = userCredential.user;
       auth.onAuthStateChanged((user) => {
         if (user) {

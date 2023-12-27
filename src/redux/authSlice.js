@@ -45,12 +45,6 @@ const authSlice = createSlice({
   },
 });
 
-export const {
-  authInfo,
-  loginFunc,
-  logoutFunc,
-  toggleLoginMode,
-  fetchUsersFromDB,
-} = authSlice.actions;
+export const { authInfo, loginFunc, logoutFunc, toggleLoginMode, fetchUsersFromDB } = authSlice.actions;
 
 export default authSlice.reducer;

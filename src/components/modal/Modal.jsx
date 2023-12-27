@@ -5,16 +5,7 @@ import { modalFunc } from "../../redux/modalSlice";
 import { useLocation, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { authFBConfig, db } from "../../config/firebaseConfig";
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  query,
-  serverTimestamp,
-  updateDoc,
-} from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDocs, query, serverTimestamp, updateDoc } from "firebase/firestore";
 import WarningModal from "./WarningModal";
 import { useState } from "react";
 const Modal = ({ setGameInfo, gameInfo }) => {
@@ -29,7 +20,6 @@ const Modal = ({ setGameInfo, gameInfo }) => {
       review: PropTypes.string,
       gameStatus: PropTypes.string,
       gameTotalTime: PropTypes.string,
-      dateEnd: PropTypes.string,
     }).isRequired,
   };
   const dispatch = useDispatch();
@@ -60,13 +50,12 @@ const Modal = ({ setGameInfo, gameInfo }) => {
       await addDoc(gamesRef, {
         gameName: gameInfo.name,
         gamePhoto: gameInfo.gamePhoto,
-        gameScore: gameInfo.score,
+        gameScore: parseInt(gameInfo.score),
         gamePlatform: gameInfo.platform,
         gameDate: gameInfo.date,
         gameReview: gameInfo.review,
         gameStatus: gameInfo.gameStatus,
         gameTotalTime: gameInfo.gameTotalTime,
-        dateEnd: gameInfo.dateEnd,
         screenshots: [],
         createdAt: serverTimestamp(),
         userId: authFBConfig.lastNotifiedUid,
@@ -76,13 +65,12 @@ const Modal = ({ setGameInfo, gameInfo }) => {
         await addDoc(gamesRef, {
           gameName: gameInfo.name,
           gamePhoto: gameInfo.gamePhoto,
-          gameScore: gameInfo.score,
+          gameScore: parseInt(gameInfo.score),
           gamePlatform: gameInfo.platform,
           gameDate: gameInfo.date,
           gameReview: gameInfo.review,
           gameStatus: gameInfo.gameStatus,
           gameTotalTime: gameInfo.gameTotalTime,
-          dateEnd: gameInfo.dateEnd,
           screenshots: [],
           createdAt: serverTimestamp(),
           userId: authFBConfig.lastNotifiedUid,
@@ -91,13 +79,12 @@ const Modal = ({ setGameInfo, gameInfo }) => {
         await updateDoc(gameDocRef, {
           gameName: gameInfo.name,
           gamePhoto: gameInfo.gamePhoto,
-          gameScore: gameInfo.score,
+          gameScore: parseInt(gameInfo.score),
           gamePlatform: gameInfo.platform,
           gameDate: gameInfo.date,
           gameReview: gameInfo.review,
           gameStatus: gameInfo.gameStatus,
           gameTotalTime: gameInfo.gameTotalTime,
-          dateEnd: gameInfo.dateEnd,
         });
         closeModal();
       } else {
@@ -225,6 +212,7 @@ const Modal = ({ setGameInfo, gameInfo }) => {
                 <option value="Bitirildi">Bitirildi</option>
                 <option value="Bırakıldı">Bırakıldı</option>
                 <option value="Bitirilecek">Bitirilecek</option>
+                <option value="Aktif Oynanılıyor">Aktif Oynanılıyor</option>
               </select>
             </div>
             <input
@@ -249,19 +237,6 @@ const Modal = ({ setGameInfo, gameInfo }) => {
                 onChange={(e) => onchangeFunc(e)}
               />
             </div>
-            <div className="flex items-center mt-3">
-              <label htmlFor="date" className="mr-2">
-                Bitiş Tarihi
-              </label>
-
-              <input
-                type="date"
-                name="dateEnd"
-                id="dateEnd"
-                className="h-10 w-full border rounded-md p-2 outline-none"
-                onChange={(e) => onchangeFunc(e)}
-              />
-            </div>
             <textarea
               className="w-full border rounded-md p-1 outline-none mt-3"
               type="text"
@@ -278,11 +253,7 @@ const Modal = ({ setGameInfo, gameInfo }) => {
                   ? "w-full h-10 bg-indigo-600 text-white flex items-center justify-center mt-2 rounded-md border-none"
                   : "w-full h-10  cursor-not-allowed flex items-center justify-center mt-2 rounded-md border disabled"
               }
-              onClick={
-                gameInfo.name && gameInfo.score && gameInfo.platform
-                  ? uploadToFirestore
-                  : undefined
-              }
+              onClick={gameInfo.name && gameInfo.score && gameInfo.platform ? uploadToFirestore : undefined}
             >
               Kaydet
             </button>
