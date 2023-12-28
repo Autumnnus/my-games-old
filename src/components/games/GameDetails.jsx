@@ -39,6 +39,13 @@ const GameDetails = () => {
     dateEnd: "",
   });
 
+  const [showMore, setShowMore] = useState(false);
+  const text = gameData?.data.gameReview;
+  const shouldShowButton = text && text.length > 520;
+  const displayedText = showMore ? text : text ? text.slice(0, 520) : "";
+
+  // ...
+
   const userPathId = location.pathname.split("/")[2];
 
   //* Functions
@@ -90,52 +97,75 @@ const GameDetails = () => {
     });
     navigate(`?edit=${gameData?.id}`);
   };
-
   if (!gameData) {
     return <div>Game not found</div>;
   }
   return (
     <div className="container mx-auto mt-8">
-      <div className="flex items-center">
-        <div className="">
+      {fullSSModal && <ImageModal imgModalUrl={imgModalUrl} imgModalName={imgModalName}></ImageModal>}
+      {modal && <Modal setGameInfo={setGameInfo} gameInfo={gameInfo}></Modal>}
+      <div className="flex text-white">
+        <div className="flex-shrink-0">
           <img
             src={gameData.data.gamePhoto}
             alt={gameData.data.gameName}
-            className="rounded-lg object-cover max-h-96 max-w-96"
+            className="rounded-lg object-cover h-96 w-96"
           />
         </div>
-        <div className="px-8">
-          <h2 className="text-4xl font-bold mb-4">{gameData.data.gameName}</h2>
-          <p className="text-gray-700 mb-6">
-            <span className="font-bold">İnceleme: </span>
-            {gameData.data.gameReview}
-          </p>
-          <div className="flex items-center text-gray-700">
-            <span className="mr-4">
-              <span className="font-bold">Platform: </span> {gameData.data.gamePlatform}
-            </span>
-            <span>
-              <span className="font-bold">Score: </span> {gameData.data.gameScore}/10
-            </span>
+        <div className="flex flex-col justify-center ml-8 w-full">
+          <div className="flex justify-between items-center mb-3">
+            <h2 className="text-4xl font-bold mb-4">{gameData.data?.gameName}</h2>
+            <div className="flex space-x-4 mt-2">
+              <button className="bg-gray-700 text-white py-2 px-4 rounded" onClick={editGameInfo}>
+                Düzenle
+              </button>
+              {ssModal ? (
+                <ScreenShotModal setSSInfo={setSSInfo} ssInfo={ssInfo}></ScreenShotModal>
+              ) : (
+                <button className="bg-gray-700 text-white py-2 px-4 rounded" onClick={openSSModal}>
+                  Ekran Görüntüsü Ekle
+                </button>
+              )}
+            </div>
+          </div>
+          <div className="space-y-3">
+            <p className="mr-4">
+              <span className="font-bold">Platform: </span>
+              <span className="text-gray-400">{gameData.data?.gamePlatform}</span>
+            </p>
+            <p>
+              <span className="font-bold">Puan: </span>
+              <span className="text-gray-400">{gameData.data?.gameScore}/10</span>
+            </p>
+            <p>
+              <span className="font-bold">Oyun durumu: </span>
+              <span className="text-gray-400">{gameData.data?.gameStatus}</span>
+            </p>
+            <p>
+              <span className="font-bold">Toplam Oynama Saati: </span>
+              <span className="text-gray-400">{gameData.data?.gameTotalTime}</span>
+            </p>
+            <p>
+              <span className="font-bold">Son Oynama Tarihi: </span>
+              <span className="text-gray-400">{gameData.data?.gameDate}</span>
+            </p>
+
+            <p className="text-white mb-6">
+              <span className="font-bold">İnceleme: </span>
+              <span className="text-gray-400">{displayedText}</span>
+
+              {shouldShowButton && (
+                <button className="text-blue-500 hover:underline" onClick={() => setShowMore(!showMore)}>
+                  {showMore ? "Daha Az Göster" : "Daha Fazla Göster"}
+                </button>
+              )}
+            </p>
           </div>
         </div>
       </div>
-      {ssModal ? (
-        <ScreenShotModal setSSInfo={setSSInfo} ssInfo={ssInfo}></ScreenShotModal>
-      ) : (
-        <button className="bg-gray-700 text-white p-2" onClick={openSSModal}>
-          Ekle
-        </button>
-      )}
-      <button className="bg-gray-700 text-white p-2" onClick={editGameInfo}>
-        Düzenle
-      </button>
-      {fullSSModal && <ImageModal imgModalUrl={imgModalUrl} imgModalName={imgModalName}></ImageModal>}
-      {modal && <Modal setGameInfo={setGameInfo} gameInfo={gameInfo}></Modal>}
-
       {!fullSSModal && !ssModal && gameData.data.screenshots && (
         <div className="mt-8">
-          <h3 className="text-2xl font-semibold mb-4">Screenshots</h3>
+          <h3 className="text-2xl font-semibold mb-4 text-white">Ekran Görüntüleri</h3>
 
           <div className="grid grid-cols-3 gap-4">
             {gameData.data.screenshots.map((screenshot, index) => (
@@ -143,7 +173,7 @@ const GameDetails = () => {
                 <img
                   src={screenshot.ssUrl}
                   alt="Geçersiz Url"
-                  className="rounded-lg max-h-56 w-full group-hover:opacity-80 transition-opacity duration-300"
+                  className="rounded-lg max-h-56 w-full group-hover:opacity-80 transition-opacity duration-300 cursor-pointer"
                   onClick={() => openImageModal(screenshot.ssUrl, screenshot.ssName)}
                 />
 
@@ -154,7 +184,7 @@ const GameDetails = () => {
                 )}
                 {token && JSON.parse(token).uid === userPathId && (
                   <FaPen
-                    className="absolute top-3 right-3 cursor-pointer text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-slate-600 rounded-md p-1"
+                    className="absolute top-3 right-3 cursor-pointer text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-slate-600 rounded-md p-1 hover:bg-slate-500"
                     size={22}
                     onClick={() => editSSInfo(index)}
                   />

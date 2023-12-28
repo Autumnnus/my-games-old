@@ -1,4 +1,3 @@
-import { IoIosClose } from "react-icons/io";
 import { useDispatch } from "react-redux";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { modalFunc } from "../../redux/modalSlice";
@@ -14,7 +13,7 @@ const Modal = ({ setGameInfo, gameInfo }) => {
     gameInfo: PropTypes.shape({
       name: PropTypes.string,
       gamePhoto: PropTypes.string,
-      score: PropTypes.string,
+      score: PropTypes.number,
       platform: PropTypes.string,
       date: PropTypes.string,
       review: PropTypes.string,
@@ -40,7 +39,8 @@ const Modal = ({ setGameInfo, gameInfo }) => {
     }));
   };
 
-  const uploadToFirestore = async () => {
+  const uploadToFirestore = async (e) => {
+    e.preventDefault();
     const querySearch = location.search.split("?")[1].split("=")[0];
     const gamesRef = collection(db, "games");
     const gameDocRef = doc(gamesRef, docId);
@@ -114,149 +114,218 @@ const Modal = ({ setGameInfo, gameInfo }) => {
           setToggleWarningModal={setToggleWarningModal}
         ></WarningModal>
       ) : (
-        <div className="fixed top-0 left-0 right-0 bottom-0 w-full h-screen flex items-center justify-center">
-          <div className="w-1/3 bg-white shadow-lg rounded-md p-4">
-            <div className="border-b py-3 flex items-center justify-between">
-              <div className="text-2xl">Yeni Bir Oyun Ekle</div>
-              <div className="flex space-x-5 items-center">
-                <FaRegTrashAlt
-                  className="cursor-pointer"
-                  size={20}
-                  onClick={() => setToggleWarningModal(true)}
-                ></FaRegTrashAlt>
-                <IoIosClose
-                  className="cursor-pointer bg-red-600 rounded-full text-white hover:bg-red-700"
-                  size={24}
-                  onClick={closeModal}
-                ></IoIosClose>
+        <div
+          id="authentication-modal"
+          tabIndex="-1"
+          aria-hidden="true"
+          className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen bg-black bg-opacity-50"
+        >
+          <div className="relative p-4 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
+            {/* Modal content */}
+            <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+              {/* Modal header */}
+              <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Sign in to our platform</h3>
+                <div className="flex items-center space-x-1">
+                  <FaRegTrashAlt
+                    className="cursor-pointer end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm ms-auto dark:hover:bg-gray-600 dark:hover:text-white"
+                    size={20}
+                    onClick={() => setToggleWarningModal(true)}
+                  ></FaRegTrashAlt>
+                  <button
+                    onClick={closeModal}
+                    type="button"
+                    className="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                    data-modal-hide="authentication-modal"
+                  >
+                    <svg
+                      className="w-3 h-3"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 14 14"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                      />
+                    </svg>
+                    <span className="sr-only">Close modal</span>
+                  </button>
+                </div>
               </div>
-            </div>
-            <input
-              className="h-10 w-full border rounded-md p-2 outline-none mt-3"
-              value={gameInfo.name}
-              type="text"
-              placeholder="Oyun İsmi (Zorunlu)"
-              name="name"
-              id="name"
-              onChange={(e) => onchangeFunc(e)}
-            />
-            <input
-              className="h-10 w-full border rounded-md p-2 outline-none mt-3"
-              value={gameInfo.gamePhoto}
-              type="text"
-              placeholder="Oyun Fotoğraf Url (İsteğe Bağlı)"
-              name="gamePhoto"
-              id="gamePhoto"
-              onChange={(e) => onchangeFunc(e)}
-            />
-            <div className="flex items-center mt-3">
-              <label htmlFor="platform" className="mr-2">
-                Platform
-              </label>
-              <select
-                id="platform"
-                name="platform"
-                className="h-10 w-full border rounded-md p-2 outline-none"
-                onChange={(e) => onchangeFunc(e)}
-                value={gameInfo.platform}
-              >
-                <option value="Steam">Steam</option>
-                <option value="Epic Games">Epic Games</option>
-                <option value="Ubisoft">Ubisoft</option>
-                <option value="Xbox(Pc)">Xbox(PC)</option>
-                <option value="EA Games">EA Games</option>
-                <option value="Ubisoft">Ubisoft</option>
-                <option value="Torrent">Torrent</option>
-                <option value="Playstation">Playstation</option>
-                <option value="Xbox Series">Xbox Series</option>
-                <option value="Nintendo">Nintendo</option>
-                <option value="Mobile">Mobile</option>
-                <option value="Diğer Platformlar">Diğer Platformlar</option>
-              </select>
-            </div>
-            <div className="flex items-center mt-3">
-              <label htmlFor="score" className="mr-2">
-                Puan
-              </label>
-              <select
-                id="score"
-                name="score"
-                className="h-10 w-full border rounded-md p-2 outline-none"
-                onChange={(e) => onchangeFunc(e)}
-                value={gameInfo.score}
-              >
-                <option value="0">0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10">10</option>
-              </select>
-            </div>
-            <div className="flex items-center mt-3">
-              <label htmlFor="gameStatus" className="mr-2">
-                Oyun Durumu
-              </label>
-              <select
-                id="gameStatus"
-                name="gameStatus"
-                className="h-10 w-full border rounded-md p-2 outline-none"
-                onChange={(e) => onchangeFunc(e)}
-                value={gameInfo.gameStatus}
-              >
-                <option value="Bitirildi">Bitirildi</option>
-                <option value="Bırakıldı">Bırakıldı</option>
-                <option value="Bitirilecek">Bitirilecek</option>
-                <option value="Aktif Oynanılıyor">Aktif Oynanılıyor</option>
-              </select>
-            </div>
-            <input
-              className="h-10 w-full border rounded-md p-2 outline-none mt-3"
-              value={gameInfo.gameTotalTime}
-              type="number"
-              placeholder="Toplam Saat (İsteğe Bağlı)"
-              name="gameTotalTime"
-              id="gameTotalTime"
-              onChange={(e) => onchangeFunc(e)}
-            />
-            <div className="flex items-center mt-3">
-              <label htmlFor="date" className="mr-2">
-                Başlangıç Tarihi
-              </label>
+              {/* Modal body */}
 
-              <input
-                type="date"
-                name="date"
-                id="date"
-                className="h-10 w-full border rounded-md p-2 outline-none"
-                onChange={(e) => onchangeFunc(e)}
-              />
+              <form className="p-4 md:p-5" onSubmit={(e) => uploadToFirestore(e)}>
+                <div className="grid gap-4 mb-4 grid-cols-2">
+                  <div className="col-span-2">
+                    <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                      Name
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      id="name"
+                      value={gameInfo.name}
+                      placeholder="Oyun İsmi (Zorunlu)"
+                      onChange={(e) => onchangeFunc(e)}
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                      required
+                    />
+                  </div>
+                  <div className="col-span-2">
+                    <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                      Oyun Fotoğraf Url
+                    </label>
+                    <input
+                      type="text"
+                      name="gamePhoto"
+                      id="gamePhoto"
+                      value={gameInfo.gamePhoto}
+                      placeholder="Oyun Fotoğraf Url (İsteğe Bağlı)"
+                      onChange={(e) => onchangeFunc(e)}
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                    />
+                  </div>
+                  <div className="col-span-2 sm:col-span-1">
+                    <label htmlFor="price" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                      Toplam Oynama Saati
+                    </label>
+                    <input
+                      type="number"
+                      name="gameTotalTime"
+                      id="gameTotalTime"
+                      onChange={(e) => onchangeFunc(e)}
+                      value={gameInfo.gameTotalTime}
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                      placeholder="158"
+                    />
+                  </div>
+                  <div className="col-span-2 sm:col-span-1">
+                    <label htmlFor="category" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                      Platform
+                    </label>
+                    <select
+                      id="platform"
+                      name="platform"
+                      onChange={(e) => onchangeFunc(e)}
+                      value={gameInfo.platform}
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                    >
+                      <option value="Steam">Steam</option>
+                      <option value="Epic Games">Epic Games</option>
+                      <option value="Ubisoft">Ubisoft</option>
+                      <option value="Xbox(Pc)">Xbox(PC)</option>
+                      <option value="EA Games">EA Games</option>
+                      <option value="Ubisoft">Ubisoft</option>
+                      <option value="Torrent">Torrent</option>
+                      <option value="Playstation">Playstation</option>
+                      <option value="Xbox Series">Xbox Series</option>
+                      <option value="Nintendo">Nintendo</option>
+                      <option value="Mobile">Mobile</option>
+                      <option value="Diğer Platformlar">Diğer Platformlar</option>
+                    </select>
+                  </div>
+                  <div className="col-span-2 sm:col-span-1">
+                    <label htmlFor="category" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                      Puan
+                    </label>
+                    <select
+                      id="score"
+                      name="score"
+                      onChange={(e) => onchangeFunc(e)}
+                      value={gameInfo.score}
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                    >
+                      <option value="0">0</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6">6</option>
+                      <option value="7">7</option>
+                      <option value="8">8</option>
+                      <option value="9">9</option>
+                      <option value="10">10</option>
+                    </select>
+                  </div>
+
+                  <div className="col-span-2 sm:col-span-1">
+                    <label htmlFor="category" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                      Oyun Durumu
+                    </label>
+                    <select
+                      id="gameStatus"
+                      name="gameStatus"
+                      onChange={(e) => onchangeFunc(e)}
+                      value={gameInfo.gameStatus}
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                    >
+                      <option value="Bitirildi">Bitirildi</option>
+                      <option value="Bırakıldı">Bırakıldı</option>
+                      <option value="Bitirilecek">Bitirilecek</option>
+                      <option value="Aktif Oynanılıyor">Aktif Oynanılıyor</option>
+                    </select>
+                  </div>
+
+                  <div className="col-span-2">
+                    <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                      Oyun Fotoğraf Url
+                    </label>
+                    <input
+                      type="text"
+                      name="gamePhoto"
+                      id="gamePhoto"
+                      value={gameInfo.gamePhoto}
+                      placeholder="Oyun Fotoğraf Url (İsteğe Bağlı)"
+                      onChange={(e) => onchangeFunc(e)}
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                    />
+                  </div>
+                  <div className="col-span-2">
+                    <label
+                      htmlFor="description"
+                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >
+                      Oyun İncelemesi
+                    </label>
+                    <textarea
+                      name="review"
+                      value={gameInfo.review}
+                      id="review"
+                      onChange={(e) => onchangeFunc(e)}
+                      rows={4}
+                      className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      placeholder="Oyun İncelemenizi Buraya Yazınız (İsteğe Bağlı)"
+                    ></textarea>
+                  </div>
+                </div>
+                <div className="col-span-2 flex justify-center">
+                  <button
+                    type="submit"
+                    className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  >
+                    <svg
+                      className="me-1 -ms-1 w-5 h-5"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                        clipRule="evenodd"
+                      ></path>
+                    </svg>
+                    Kaydet
+                  </button>
+                </div>
+              </form>
             </div>
-            <textarea
-              className="w-full border rounded-md p-1 outline-none mt-3"
-              type="text"
-              placeholder="İnceleme (İsteğe Bağlı)"
-              name="review"
-              value={gameInfo.review}
-              id="review"
-              onChange={(e) => onchangeFunc(e)}
-              rows={4}
-            />
-            <button
-              className={
-                gameInfo.name && gameInfo.score && gameInfo.platform
-                  ? "w-full h-10 bg-indigo-600 text-white flex items-center justify-center mt-2 rounded-md border-none"
-                  : "w-full h-10  cursor-not-allowed flex items-center justify-center mt-2 rounded-md border disabled"
-              }
-              onClick={gameInfo.name && gameInfo.score && gameInfo.platform ? uploadToFirestore : undefined}
-            >
-              Kaydet
-            </button>
           </div>
         </div>
       )}

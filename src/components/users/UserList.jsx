@@ -72,7 +72,6 @@ const UserList = () => {
     updateUserGameSSSizes();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [users]);
-  console.log(userGames);
   const openUserSettingsModal = () => {
     dispatch(toggleUserSettingsModal());
     navigate(`?userEdit=${JSON.parse(token).uid}`);
@@ -138,17 +137,12 @@ const UserList = () => {
                 </Link>
               </th>
               <td className="px-6 py-4 text-center">
-                {/* {userGames.length} */}
                 {userGames.find((game) => game.userId === user.id)?.gameSizes.length}
               </td>
               <td className="px-6 py-4 text-center">
-                {
-                  userGames
-                    .filter((game) => game.userId === user.id)
-                    .map((filteredGame) => filteredGame.finishedGameSizes).length
-                }
+                {userGames.filter((game) => game.userId === user.id)[0]?.finishedGameSizes.length}
               </td>
-              <td className="px-6 py-4 text-center">{userSS[index]}</td>
+              <td className="px-6 py-4 text-center">{userSS[index]} </td>
             </tr>
           ))}
         </tbody>

@@ -7,6 +7,7 @@ import { CiLogout } from "react-icons/ci";
 import { signOut } from "firebase/auth";
 import { authFBConfig } from "../../config/firebaseConfig";
 import { logoutFunc } from "../../redux/authSlice";
+
 const Navbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -17,7 +18,6 @@ const Navbar = () => {
   const auth = authFBConfig;
 
   const handleLogout = () => {
-    console.log(auth);
     if (token) {
       signOut(auth)
         .then(() => {
@@ -46,21 +46,34 @@ const Navbar = () => {
     }
   };
   return (
-    <nav className="bg-purple-700 p-4 text-white">
+    <nav className="mygames-navbar-bg p-4 text-white">
       <div className="container mx-auto">
         <div className="flex items-center justify-between">
           <div className=" text-xl font-bold cursor-pointer" onClick={() => navigate("/")}>
             My Games
           </div>
+
+          <ul className="flex space-x-5 items-center">
+            <li className="text-lg hover:rounded-md cursor-pointer" onClick={() => navigate("/users")}>
+              Üyeler
+            </li>
+            {token && (
+              <li className="text-lg hover:rounded-md cursor-pointer" onClick={handleUser}>
+                Oyunlarım
+              </li>
+            )}
+          </ul>
           <ul className="flex space-x-5 items-center">
             {token && queryPathname === "user" && queryPathname2 !== "game" && (
               <li className="text-lg hover:rounded-md">
-                <CiCirclePlus className="w-10 h-10 cursor-pointer" onClick={openModal}></CiCirclePlus>
+                <CiCirclePlus className="w-8 h-8 cursor-pointer" onClick={openModal}></CiCirclePlus>
               </li>
             )}
-            <li className="text-l hover:rounded-md">
-              <FaRegUser className="w-8 h-8 cursor-pointer" onClick={handleUser}></FaRegUser>
-            </li>
+            {!token && (
+              <li className="text-l hover:rounded-md">
+                <FaRegUser className="w-8 h-8 cursor-pointer"></FaRegUser>
+              </li>
+            )}
             {token && (
               <li className="text-l hover:rounded-md">
                 <CiLogout className="w-8 h-8 cursor-pointer" onClick={handleLogout}></CiLogout>

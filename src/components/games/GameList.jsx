@@ -17,12 +17,12 @@ const GameList = () => {
   const gamesRef = collection(db, "games");
   const [games, setGames] = useState([]);
   const [filterValue, setFilterValue] = useState("gameDate");
-  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortOrder, setSortOrder] = useState("desc");
   const token = useSelector((state) => state.auth.token);
   const modal = useSelector((state) => state.modal.modal);
   const [user, setUser] = useState({});
   //prettier-ignore
-  const [gameInfo, setGameInfo] = useState({ name: "", gamePhoto: "", score: "0", platform: "", date: "", review: "", gameStatus: "Bitirildi", gameTotalTime: ""});
+  const [gameInfo, setGameInfo] = useState({ name: "", gamePhoto: "", score: 0, platform: "", date: "", review: "", gameStatus: "Bitirildi", gameTotalTime: ""});
   const editGameInfo = (index) => {
     dispatch(modalFunc());
     setGameInfo({
@@ -93,7 +93,6 @@ const GameList = () => {
 
   const filterDatas = (e) => {
     const clickedValue = e.target.innerText.toLowerCase();
-    console.log("clickedValue", clickedValue);
     setFilterValue((prevFilterValue) => {
       if (clickedValue === "oyun") {
         return prevFilterValue === "gameName" ? "-gameName" : "gameName";

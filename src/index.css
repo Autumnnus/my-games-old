@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+*{
+font-family: 'Poppins', sans-serif;
+}
+
  body {
-  background-color: #000
+  background-color: #12181b
 } 
+
+.mygames-navbar-bg {
+  /* background: linear-gradient(to right, #0F4C75, #1B262C); */
+  background-color: rgb(31 41 55);
+}
