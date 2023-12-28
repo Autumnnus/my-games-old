@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import UserSettingsModal from "../modal/UserSettingsModal";
 import { toggleUserSettingsModal } from "../../redux/modalSlice";
+import ReactLoading from "react-loading";
 
 const UserList = () => {
   const dispatch = useDispatch();
@@ -81,6 +82,9 @@ const UserList = () => {
       photoUrl: foundUser.data.photoUrl,
     });
   };
+  if (users.length === 0) {
+    return <ReactLoading className="mx-auto w-full" type="spinningBubbles" height={375} width={375} />;
+  }
   return (
     <div>
       {userSettingsModal && <UserSettingsModal setUserInfo={setUserInfo} userInfo={userInfo}></UserSettingsModal>}

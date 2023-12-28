@@ -8,6 +8,7 @@ import { modalFunc, toggleSSModal, togglefullSSModal } from "../../redux/modalSl
 import ScreenShotModal from "../modal/ScreenShotModal";
 import ImageModal from "../modal/ImageModal";
 import Modal from "../modal/Modal";
+import ReactLoading from "react-loading";
 
 const GameDetails = () => {
   const location = useLocation();
@@ -98,7 +99,7 @@ const GameDetails = () => {
     navigate(`?edit=${gameData?.id}`);
   };
   if (!gameData) {
-    return <div>Game not found</div>;
+    return <ReactLoading className="mx-auto w-full" type="spinningBubbles" height={375} width={375} />;
   }
   return (
     <div className="container mx-auto mt-8">
@@ -106,11 +107,15 @@ const GameDetails = () => {
       {modal && <Modal setGameInfo={setGameInfo} gameInfo={gameInfo}></Modal>}
       <div className="flex text-white">
         <div className="flex-shrink-0">
-          <img
-            src={gameData.data.gamePhoto}
-            alt={gameData.data.gameName}
-            className="rounded-lg object-cover h-96 w-96"
-          />
+          {gameData.data.gamePhoto === "" ? (
+            <img
+              src="https://s22908.pcdn.co/wp-content/uploads/2023/07/most-hyped-up-games.jpg"
+              alt=""
+              className="rounded-lg object-cover h-96 w-96"
+            />
+          ) : (
+            <img src={gameData.data.gamePhoto} alt="Geçersiz Url" className="rounded-lg object-cover h-96 w-96" />
+          )}
         </div>
         <div className="flex flex-col justify-center ml-8 w-full">
           <div className="flex justify-between items-center mb-3">

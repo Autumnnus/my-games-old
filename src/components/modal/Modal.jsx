@@ -31,6 +31,16 @@ const Modal = ({ setGameInfo, gameInfo }) => {
   const closeModal = () => {
     dispatch(modalFunc());
     navigate(location.pathname);
+    setGameInfo({
+      name: "",
+      gamePhoto: "",
+      score: 0,
+      platform: "Steam",
+      date: "",
+      review: "",
+      gameStatus: "Bitirildi",
+      gameTotalTime: "",
+    });
   };
   const onchangeFunc = (e) => {
     setGameInfo((prev) => ({
@@ -39,9 +49,9 @@ const Modal = ({ setGameInfo, gameInfo }) => {
     }));
   };
 
+  const querySearch = location.search.split("?")[1].split("=")[0];
   const uploadToFirestore = async (e) => {
     e.preventDefault();
-    const querySearch = location.search.split("?")[1].split("=")[0];
     const gamesRef = collection(db, "games");
     const gameDocRef = doc(gamesRef, docId);
     const gamesQuery = query(gamesRef);
@@ -94,10 +104,12 @@ const Modal = ({ setGameInfo, gameInfo }) => {
     setGameInfo({
       name: "",
       gamePhoto: "",
-      score: "",
-      platform: "",
+      score: 0,
+      platform: "Steam",
       date: "",
       review: "",
+      gameStatus: "Bitirildi",
+      gameTotalTime: "",
     });
   };
   const deleteFromFirestore = async () => {
@@ -106,6 +118,7 @@ const Modal = ({ setGameInfo, gameInfo }) => {
     await deleteDoc(gameDocRef);
     dispatch(modalFunc());
   };
+  console.log(gameInfo);
   return (
     <>
       {toggleWarningModal ? (
@@ -118,14 +131,20 @@ const Modal = ({ setGameInfo, gameInfo }) => {
           id="authentication-modal"
           tabIndex="-1"
           aria-hidden="true"
-          className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen bg-black bg-opacity-50"
+          className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen bg-black bg-opacity-50 overflow-auto"
         >
           <div className="relative p-4 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
             {/* Modal content */}
             <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
               {/* Modal header */}
               <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Sign in to our platform</h3>
+                <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
+                  {querySearch === "create" ? (
+                    <span>Yeni Bir Oyun Ekle</span>
+                  ) : querySearch === "edit" ? (
+                    <span>Oyunu Düzenle</span>
+                  ) : null}
+                </h1>
                 <div className="flex items-center space-x-1">
                   <FaRegTrashAlt
                     className="cursor-pointer end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm ms-auto dark:hover:bg-gray-600 dark:hover:text-white"
@@ -277,11 +296,10 @@ const Modal = ({ setGameInfo, gameInfo }) => {
                       Oyun Fotoğraf Url
                     </label>
                     <input
-                      type="text"
-                      name="gamePhoto"
-                      id="gamePhoto"
-                      value={gameInfo.gamePhoto}
-                      placeholder="Oyun Fotoğraf Url (İsteğe Bağlı)"
+                      type="date"
+                      name="date"
+                      id="date"
+                      value={gameInfo.date}
                       onChange={(e) => onchangeFunc(e)}
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                     />

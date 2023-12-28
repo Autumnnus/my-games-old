@@ -2,15 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
-*{
-font-family: 'Poppins', sans-serif;
+* {
+  font-family: "Poppins", sans-serif;
 }
 
- body {
-  background-color: #12181b
-} 
+body {
+  background-color: #12181b;
+}
 
 .mygames-navbar-bg {
   /* background: linear-gradient(to right, #0F4C75, #1B262C); */
   background-color: rgb(31 41 55);
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 1;
+  display: block;
+  /* background: url(https://mywildalberta.ca/images/GFX-MWA-Parks-Reservations.png) no-repeat; */
+  color: rgba(255, 255, 255, 0);
+  background-color: white;
+  border-radius: 1000px;
+  width: 20px;
+  height: 20px;
+  border-width: thin;
+  cursor: pointer;
 }

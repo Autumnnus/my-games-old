@@ -19,6 +19,10 @@ const UserSettingsModal = ({ setUserInfo, userInfo }) => {
   const closeModal = () => {
     dispatch(toggleUserSettingsModal());
     navigate(location.pathname);
+    setUserInfo({
+      name: "",
+      photoUrl: "",
+    });
   };
 
   const onchangeFunc = (e) => {

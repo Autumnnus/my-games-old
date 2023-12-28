@@ -8,6 +8,7 @@ import Modal from "../modal/Modal";
 import { modalFunc } from "../../redux/modalSlice";
 import GamesTableThComp from "./GamesTableThComp";
 import { gameListThElements } from "../../utils/GameListThElements";
+import ReactLoading from "react-loading";
 
 const GameList = () => {
   const navigate = useNavigate();
@@ -16,13 +17,13 @@ const GameList = () => {
   const userPathId = location.pathname.split("/")[2];
   const gamesRef = collection(db, "games");
   const [games, setGames] = useState([]);
-  const [filterValue, setFilterValue] = useState("gameDate");
+  const [filterValue, setFilterValue] = useState("-gameDate");
   const [sortOrder, setSortOrder] = useState("desc");
   const token = useSelector((state) => state.auth.token);
   const modal = useSelector((state) => state.modal.modal);
   const [user, setUser] = useState({});
   //prettier-ignore
-  const [gameInfo, setGameInfo] = useState({ name: "", gamePhoto: "", score: 0, platform: "", date: "", review: "", gameStatus: "Bitirildi", gameTotalTime: ""});
+  const [gameInfo, setGameInfo] = useState({ name: "", gamePhoto: "", score: 0, platform: "Steam", date: "", review: "", gameStatus: "Bitirildi", gameTotalTime: ""});
   const editGameInfo = (index) => {
     dispatch(modalFunc());
     setGameInfo({
@@ -77,8 +78,7 @@ const GameList = () => {
         fieldToOrderBy = filterValue.slice(1);
     }
     setSortOrder(filterValue.charAt(0) === "-" ? "desc" : "asc");
-    console.log("filterValue", filterValue);
-    console.log("fieldToOrderBy", fieldToOrderBy);
+
     const querryMessages = query(gamesRef, where("userId", "==", userPathId), orderBy(fieldToOrderBy, sortOrder));
     const unsuscribe = onSnapshot(querryMessages, (snapshot) => {
       const updatedGames = [];
@@ -89,36 +89,42 @@ const GameList = () => {
     });
     return () => unsuscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterValue]);
+  }, [filterValue, location, sortOrder]);
 
   const filterDatas = (e) => {
-    const clickedValue = e.target.innerText.toLowerCase();
-    setFilterValue((prevFilterValue) => {
-      if (clickedValue === "oyun") {
-        return prevFilterValue === "gameName" ? "-gameName" : "gameName";
-      }
-      if (clickedValue === "puan") {
-        return prevFilterValue === "gameScore" ? "-gameScore" : "gameScore";
-      }
-      if (clickedValue === "platform") {
-        return prevFilterValue === "gamePlatform" ? "-gamePlatform" : "gamePlatform";
-      }
-      if (clickedValue === "ss") {
-        return prevFilterValue === "screenshots" ? "-screenshots" : "screenshots";
-      }
-      if (clickedValue === "saat") {
-        return prevFilterValue === "gameTotalTime" ? "-gameTotalTime" : "gameTotalTime";
-      }
-      if (clickedValue === "son oynama") {
-        return prevFilterValue === "gameDate" ? "-gameDate" : "gameDate";
-      }
-      if (clickedValue === "durum") {
-        return prevFilterValue === "gameStatus" ? "-gameStatus" : "gameStatus";
-      }
-      return prevFilterValue;
-    });
+    const clickedValue = e.target?.innerText;
+    if (clickedValue) {
+      const lowerClickedValue = clickedValue.toLowerCase();
+      setFilterValue((prevFilterValue) => {
+        if (lowerClickedValue === "oyun") {
+          return prevFilterValue === "gameName" ? "-gameName" : "gameName";
+        }
+        if (lowerClickedValue === "puan") {
+          return prevFilterValue === "gameScore" ? "-gameScore" : "gameScore";
+        }
+        if (lowerClickedValue === "platform") {
+          return prevFilterValue === "gamePlatform" ? "-gamePlatform" : "gamePlatform";
+        }
+        if (lowerClickedValue === "ss") {
+          return prevFilterValue === "screenshots" ? "-screenshots" : "screenshots";
+        }
+        if (lowerClickedValue === "saat") {
+          return prevFilterValue === "gameTotalTime" ? "-gameTotalTime" : "gameTotalTime";
+        }
+        if (lowerClickedValue === "son oynama") {
+          return prevFilterValue === "gameDate" ? "-gameDate" : "gameDate";
+        }
+        if (lowerClickedValue === "durum") {
+          return prevFilterValue === "gameStatus" ? "-gameStatus" : "gameStatus";
+        }
+        return prevFilterValue;
+      });
+    }
   };
 
+  if (games.length === 0) {
+    return <ReactLoading className="mx-auto w-full" type="spinningBubbles" height={375} width={375} />;
+  }
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
       <div>{modal && <Modal setGameInfo={setGameInfo} gameInfo={gameInfo}></Modal>}</div>
@@ -146,15 +152,21 @@ const GameList = () => {
           {games.map((game, index) => (
             <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700" key={index}>
               <td className="px-4 py-4">
-                {game.gamePhoto === "" ? (
-                  <img src={"../../../public/logo.png"} alt="Oyun" className="object-cover w-16 h-16 rounded-full" />
-                ) : (
-                  <img
-                    src={game.gamePhoto}
-                    alt="Geçersiz Fotoğraf Url"
-                    className="object-cover w-16 h-16 rounded-full"
-                  />
-                )}
+                <Link to={`/user/${userPathId}/game/${game.id}`}>
+                  {game.gamePhoto === "" ? (
+                    <img
+                      src={"../../../public/logo.png"}
+                      alt="Oyun"
+                      className="object-contain w-16 h-16 rounded-full"
+                    />
+                  ) : (
+                    <img
+                      src={game.gamePhoto}
+                      alt="Geçersiz Fotoğraf Url"
+                      className="object-cover w-16 h-16 rounded-full"
+                    />
+                  )}
+                </Link>
               </td>
               <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                 <Link to={`/user/${userPathId}/game/${game.id}`} className="hover:text-blue-600 cursor-pointer">

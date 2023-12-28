@@ -54,11 +54,21 @@ const Navbar = () => {
           </div>
 
           <ul className="flex space-x-5 items-center">
-            <li className="text-lg hover:rounded-md cursor-pointer" onClick={() => navigate("/users")}>
+            <li
+              className={`text-lg hover:rounded-md cursor-pointer ${
+                queryPathname === "users" ? "border-b-2 border-white" : ""
+              }`}
+              onClick={() => navigate("/users")}
+            >
               Üyeler
             </li>
             {token && (
-              <li className="text-lg hover:rounded-md cursor-pointer" onClick={handleUser}>
+              <li
+                className={`text-lg hover:rounded-md cursor-pointer ${
+                  queryPathname === "user" ? "border-b-2 border-white" : ""
+                }`}
+                onClick={handleUser}
+              >
                 Oyunlarım
               </li>
             )}

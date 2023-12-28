@@ -34,6 +34,10 @@ const ScreenShotModal = ({ setSSInfo, ssInfo }) => {
   const closeModal = () => {
     dispatch(toggleSSModal());
     navigate(location.pathname);
+    setSSInfo({
+      ssUrl: "",
+      ssName: "",
+    });
   };
   const generateUniqueID = () => {
     const randomString = Math.random().toString(36).substring(2, 10);
