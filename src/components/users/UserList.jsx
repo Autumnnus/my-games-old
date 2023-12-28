@@ -93,7 +93,7 @@ const UserList = () => {
           <div className="flex justify-between">
             <span>Tüm Üyeler</span>
             {token && (
-              <p className="hover:text-blue-600 cursor-pointer" onClick={openUserSettingsModal}>
+              <p className="hover:text-sky-800 duration-300 cursor-pointer" onClick={openUserSettingsModal}>
                 Profili Düzenle
               </p>
             )}
@@ -120,23 +120,25 @@ const UserList = () => {
           {users.map((user, index) => (
             <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700" key={index}>
               <td className="px-4 py-4">
-                {user.data.photoUrl === "" ? (
-                  <img
-                    src={"../../../public/logo.png"}
-                    alt="Kullanıcı Fotoğrafı"
-                    className="object-cover w-16 h-16 rounded-full"
-                  />
-                ) : (
-                  <img
-                    src={user.data.photoUrl}
-                    alt="Geçersiz Fotoğraf Url"
-                    className="object-cover w-16 h-16 rounded-full"
-                  />
-                )}
+                <Link to={`/user/${user.id}`} className="hover:text-sky-800 duration-150 cursor-pointer">
+                  {user.data.photoUrl === "" ? (
+                    <img
+                      src={"../../../public/logo.png"}
+                      alt="Kullanıcı Fotoğrafı"
+                      className="object-cover w-16 h-16 rounded-full hover:scale-110 transition-transform duration-300 ease-in-out"
+                    />
+                  ) : (
+                    <img
+                      src={user.data.photoUrl}
+                      alt="Geçersiz Fotoğraf Url"
+                      className="object-cover w-16 h-16 rounded-full hover:scale-110 transition-transform duration-300 ease-in-out"
+                    />
+                  )}
+                </Link>
               </td>
 
               <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                <Link to={`/user/${user.id}`} className="hover:text-blue-600 cursor-pointer">
+                <Link to={`/user/${user.id}`} className="hover:text-sky-800 duration-150 cursor-pointer">
                   {user.data.name}
                 </Link>
               </th>

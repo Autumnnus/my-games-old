@@ -37,14 +37,6 @@ const Navbar = () => {
     dispatch(modalFunc());
     navigate("?create=true");
   };
-
-  const handleUser = () => {
-    if (!token) {
-      navigate("/auth");
-    } else {
-      navigate(`/user/${JSON.parse(token).uid}`);
-    }
-  };
   return (
     <nav className="mygames-navbar-bg p-4 text-white">
       <div className="container mx-auto">
@@ -55,7 +47,7 @@ const Navbar = () => {
 
           <ul className="flex space-x-5 items-center">
             <li
-              className={`text-lg hover:rounded-md cursor-pointer ${
+              className={`text-lg hover:rounded-md cursor-pointer hover:text-sky-800 duration-300 ${
                 queryPathname === "users" ? "border-b-2 border-white" : ""
               }`}
               onClick={() => navigate("/users")}
@@ -64,10 +56,10 @@ const Navbar = () => {
             </li>
             {token && (
               <li
-                className={`text-lg hover:rounded-md cursor-pointer ${
+                className={`text-lg hover:rounded-md cursor-pointer hover:text-sky-800 duration-300 ${
                   queryPathname === "user" ? "border-b-2 border-white" : ""
                 }`}
-                onClick={handleUser}
+                onClick={() => navigate(`/user/${JSON.parse(token).uid}`)}
               >
                 Oyunlarım
               </li>
@@ -75,17 +67,17 @@ const Navbar = () => {
           </ul>
           <ul className="flex space-x-5 items-center">
             {token && queryPathname === "user" && queryPathname2 !== "game" && (
-              <li className="text-lg hover:rounded-md">
+              <li className="text-lg hover:rounded-md hover:text-sky-800 duration-300">
                 <CiCirclePlus className="w-8 h-8 cursor-pointer" onClick={openModal}></CiCirclePlus>
               </li>
             )}
             {!token && (
-              <li className="text-l hover:rounded-md">
-                <FaRegUser className="w-8 h-8 cursor-pointer"></FaRegUser>
+              <li className="text-l hover:rounded-md hover:text-sky-800 duration-300">
+                <FaRegUser className="w-8 h-8 cursor-pointer" onClick={() => navigate("/auth")}></FaRegUser>
               </li>
             )}
             {token && (
-              <li className="text-l hover:rounded-md">
+              <li className="text-l hover:rounded-md hover:text-sky-800 duration-300">
                 <CiLogout className="w-8 h-8 cursor-pointer" onClick={handleLogout}></CiLogout>
               </li>
             )}

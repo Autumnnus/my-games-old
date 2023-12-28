@@ -9,6 +9,7 @@ import ScreenShotModal from "../modal/ScreenShotModal";
 import ImageModal from "../modal/ImageModal";
 import Modal from "../modal/Modal";
 import ReactLoading from "react-loading";
+import CircleRightComp from "../CircleRightComp";
 
 const GameDetails = () => {
   const location = useLocation();
@@ -120,18 +121,26 @@ const GameDetails = () => {
         <div className="flex flex-col justify-center ml-8 w-full">
           <div className="flex justify-between items-center mb-3">
             <h2 className="text-4xl font-bold mb-4">{gameData.data?.gameName}</h2>
-            <div className="flex space-x-4 mt-2">
-              <button className="bg-gray-700 text-white py-2 px-4 rounded" onClick={editGameInfo}>
-                Düzenle
-              </button>
-              {ssModal ? (
-                <ScreenShotModal setSSInfo={setSSInfo} ssInfo={ssInfo}></ScreenShotModal>
-              ) : (
-                <button className="bg-gray-700 text-white py-2 px-4 rounded" onClick={openSSModal}>
-                  Ekran Görüntüsü Ekle
+            {token && JSON.parse(token).uid === userPathId && (
+              <div className="flex space-x-4 mt-2">
+                <button
+                  className="bg-gray-700 text-white py-2 px-4 rounded hover:bg-gray-500 duration-500"
+                  onClick={editGameInfo}
+                >
+                  Düzenle
                 </button>
-              )}
-            </div>
+                {ssModal ? (
+                  <ScreenShotModal setSSInfo={setSSInfo} ssInfo={ssInfo}></ScreenShotModal>
+                ) : (
+                  <button
+                    className="bg-gray-700 text-white py-2 px-4 rounded hover:bg-gray-500 duration-500"
+                    onClick={openSSModal}
+                  >
+                    Ekran Görüntüsü Ekle
+                  </button>
+                )}
+              </div>
+            )}
           </div>
           <div className="space-y-3">
             <p className="mr-4">
@@ -166,12 +175,16 @@ const GameDetails = () => {
               )}
             </p>
           </div>
+          <div className="absolute top-0 right-0 z-[-1] opacity-30 lg:opacity-100">
+            <CircleRightComp />
+          </div>
         </div>
       </div>
+      {gameData.data.screenshots.length !== 0 && (
+        <h3 className="text-2xl font-semibold mb-4 text-white mt-8">Ekran Görüntüleri</h3>
+      )}
       {!fullSSModal && !ssModal && gameData.data.screenshots && (
-        <div className="mt-8">
-          <h3 className="text-2xl font-semibold mb-4 text-white">Ekran Görüntüleri</h3>
-
+        <div>
           <div className="grid grid-cols-3 gap-4">
             {gameData.data.screenshots.map((screenshot, index) => (
               <div key={index} className="relative mb-4 group">

@@ -28,7 +28,7 @@ const UserSettingsModal = ({ setUserInfo, userInfo }) => {
   const onchangeFunc = (e) => {
     setUserInfo((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.value.trimStart(),
     }));
   };
   const uploadToFirestore = async (e) => {
@@ -36,8 +36,8 @@ const UserSettingsModal = ({ setUserInfo, userInfo }) => {
     const userRef = collection(db, "users");
     const userDocRef = doc(userRef, docId);
     await updateDoc(userDocRef, {
-      name: userInfo.name,
-      photoUrl: userInfo.photoUrl,
+      name: userInfo.name.trim(),
+      photoUrl: userInfo.photoUrl.trim(),
     });
     closeModal();
     window.location.reload();
@@ -63,7 +63,7 @@ const UserSettingsModal = ({ setUserInfo, userInfo }) => {
               <button
                 onClick={closeModal}
                 type="button"
-                className="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                className="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white duration-300"
                 data-modal-hide="authentication-modal"
               >
                 <svg
@@ -121,7 +121,7 @@ const UserSettingsModal = ({ setUserInfo, userInfo }) => {
               <div className="col-span-2 flex justify-center">
                 <button
                   type="submit"
-                  className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 duration-300"
                 >
                   <svg
                     className="me-1 -ms-1 w-5 h-5"

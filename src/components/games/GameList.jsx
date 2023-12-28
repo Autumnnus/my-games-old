@@ -85,7 +85,7 @@ const GameList = () => {
       snapshot.forEach((doc) => {
         updatedGames.push({ ...doc.data(), id: doc.id });
       });
-      setGames(updatedGames);
+      updatedGames.length === 0 ? setGames("Empty") : setGames(updatedGames);
     });
     return () => unsuscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -121,9 +121,18 @@ const GameList = () => {
       });
     }
   };
-
-  if (games.length === 0) {
+  if (games.length === 0 && games !== "Empty") {
     return <ReactLoading className="mx-auto w-full" type="spinningBubbles" height={375} width={375} />;
+  } else if (games === "Empty") {
+    return (
+      <div className="flex flex-col items-center justify-center w-full h-full text-center">
+        <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Oyun bulunamadı</h1>
+        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+          <strong>{user.name}</strong> henüz oyun eklememiş
+        </p>
+        <div>{modal && <Modal setGameInfo={setGameInfo} gameInfo={gameInfo}></Modal>}</div>
+      </div>
+    );
   }
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -157,19 +166,22 @@ const GameList = () => {
                     <img
                       src={"../../../public/logo.png"}
                       alt="Oyun"
-                      className="object-contain w-16 h-16 rounded-full"
+                      className="object-contain w-16 h-16 rounded-full hover:scale-110 transition-transform duration-300 ease-in-out"
                     />
                   ) : (
                     <img
                       src={game.gamePhoto}
                       alt="Geçersiz Fotoğraf Url"
-                      className="object-cover w-16 h-16 rounded-full"
+                      className="object-cover w-16 h-16 rounded-full hover:scale-110 transition-transform duration-300 ease-in-out"
                     />
                   )}
                 </Link>
               </td>
               <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                <Link to={`/user/${userPathId}/game/${game.id}`} className="hover:text-blue-600 cursor-pointer">
+                <Link
+                  to={`/user/${userPathId}/game/${game.id}`}
+                  className="hover:text-sky-800 duration-150 cursor-pointer"
+                >
                   {game.gameName}
                 </Link>
               </th>
@@ -182,7 +194,7 @@ const GameList = () => {
                 {game.gameStatus}{" "}
                 {token && JSON.parse(token).uid === userPathId && (
                   <FaPen
-                    className="absolute top-3 right-3 cursor-pointer hover:text-blue-600"
+                    className="absolute top-3 right-3 cursor-pointer hover:text-sky-800 duration-150"
                     onClick={() => editGameInfo(index)}
                   ></FaPen>
                 )}

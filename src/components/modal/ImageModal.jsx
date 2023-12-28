@@ -15,7 +15,7 @@ const ImageModal = ({ imgModalUrl, imgModalName }) => {
   return (
     <div className="fixed top-0 left-0 right-0 bottom-0 w-full h-screen flex items-center justify-center overflow-auto">
       <div className="w-full  shadow-lg rounded-md p-4">
-        <div className="py-3 flex items-center bg-gray-800 rounded-t-md p-2">
+        <div className="py-3 flex items-center bg-gray-700 rounded-t-md p-2">
           <div className="flex items-center space-x-5 flex-grow">
             <p className="flex-grow text-white">{imgModalName}</p>
             <IoIosClose

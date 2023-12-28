@@ -14,7 +14,7 @@ const Login = () => {
   });
 
   const onchangeFunc = (e) => {
-    setLoginInfo((prev) => ({ ...prev, [e.target.id]: e.target.value }));
+    setLoginInfo((prev) => ({ ...prev, [e.target.id]: e.target.value.trimStart() }));
   };
   const auth = authFBConfig;
   const handleLogin = async (e) => {
@@ -41,7 +41,7 @@ const Login = () => {
     }
   };
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center">
       <div
         id="authentication-modal"
         tabIndex="-1"

@@ -28,7 +28,7 @@ const ScreenShotModal = ({ setSSInfo, ssInfo }) => {
   const onchangeFunc = (e) => {
     setSSInfo((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.value.trimStart(),
     }));
   };
   const closeModal = () => {
@@ -54,8 +54,8 @@ const ScreenShotModal = ({ setSSInfo, ssInfo }) => {
       const updatedScreenshots = [
         ...gameDoc.data().screenshots,
         {
-          ssUrl: ssInfo.ssUrl,
-          ssName: ssInfo.ssName,
+          ssUrl: ssInfo.ssUrl.trim(),
+          ssName: ssInfo.ssName.trim(),
           id: generateUniqueID(),
         },
       ];
@@ -67,8 +67,8 @@ const ScreenShotModal = ({ setSSInfo, ssInfo }) => {
         ss.id === searchValue
           ? {
               ...ss,
-              ssUrl: ssInfo.ssUrl,
-              ssName: ssInfo.ssName,
+              ssUrl: ssInfo.ssUrl.trim(),
+              ssName: ssInfo.ssName.trim(),
             }
           : ss
       );
@@ -130,7 +130,7 @@ const ScreenShotModal = ({ setSSInfo, ssInfo }) => {
                 <div className="flex items-center space-x-1">
                   {searchKey === "editSS" && (
                     <FaRegTrashAlt
-                      className="cursor-pointer end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm ms-auto dark:hover:bg-gray-600 dark:hover:text-white"
+                      className="cursor-pointer end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm ms-auto dark:hover:bg-gray-600 dark:hover:text-white duration-300"
                       size={20}
                       onClick={deleteWarningModal}
                     ></FaRegTrashAlt>
@@ -138,7 +138,7 @@ const ScreenShotModal = ({ setSSInfo, ssInfo }) => {
                   <button
                     onClick={closeModal}
                     type="button"
-                    className="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                    className="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white duration-300"
                     data-modal-hide="authentication-modal"
                   >
                     <svg
@@ -176,7 +176,7 @@ const ScreenShotModal = ({ setSSInfo, ssInfo }) => {
                       id="ssUrl"
                       onChange={(e) => onchangeFunc(e)}
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                      required=""
+                      required
                     />
                   </div>
                   <div className="col-span-2">
@@ -201,7 +201,7 @@ const ScreenShotModal = ({ setSSInfo, ssInfo }) => {
                 <div className="col-span-2 flex justify-center">
                   <button
                     type="submit"
-                    className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 duration-300"
                   >
                     <svg
                       className="me-1 -ms-1 w-5 h-5"
