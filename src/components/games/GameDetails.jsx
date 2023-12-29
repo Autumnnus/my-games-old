@@ -188,29 +188,32 @@ const GameDetails = () => {
       {!fullSSModal && !ssModal && gameData.data.screenshots && (
         <div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {gameData.data.screenshots.map((screenshot, index) => (
-              <div key={index} className="relative mb-4 group">
-                <img
-                  src={screenshot.ssUrl}
-                  alt="Geçersiz Url"
-                  className="rounded-lg max-h-56 w-full group-hover:opacity-80 transition-opacity duration-300 cursor-pointer"
-                  onClick={() => openImageModal(screenshot.ssUrl, screenshot.ssName)}
-                />
-
-                {screenshot.ssName && (
-                  <p className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-2">
-                    {screenshot.ssName}
-                  </p>
-                )}
-                {token && JSON.parse(token).uid === userPathId && (
-                  <FaPen
-                    className="absolute top-3 right-3 cursor-pointer text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-slate-600 rounded-md p-1 hover:bg-slate-500"
-                    size={22}
-                    onClick={() => editSSInfo(index)}
+            {gameData.data.screenshots
+              .slice()
+              .reverse()
+              .map((screenshot, index, array) => (
+                <div key={array.length - 1 - index} className="relative mb-4 group">
+                  <img
+                    src={screenshot.ssUrl}
+                    alt="Geçersiz Url"
+                    className="rounded-lg max-h-56 w-full group-hover:opacity-80 transition-opacity duration-300 cursor-pointer"
+                    onClick={() => openImageModal(screenshot.ssUrl, screenshot.ssName)}
                   />
-                )}
-              </div>
-            ))}
+
+                  {screenshot.ssName && (
+                    <p className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-2">
+                      {screenshot.ssName}
+                    </p>
+                  )}
+                  {token && JSON.parse(token).uid === userPathId && (
+                    <FaPen
+                      className="absolute top-3 right-3 cursor-pointer text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-slate-600 rounded-md p-1 hover:bg-slate-500"
+                      size={22}
+                      onClick={() => editSSInfo(array.length - 1 - index)}
+                    />
+                  )}
+                </div>
+              ))}
           </div>
         </div>
       )}
