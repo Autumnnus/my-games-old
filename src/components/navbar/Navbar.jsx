@@ -41,13 +41,12 @@ const Navbar = () => {
     <nav className="mygames-navbar-bg p-4 text-white">
       <div className="container mx-auto">
         <div className="flex items-center justify-between">
-          <div className=" text-xl font-bold cursor-pointer" onClick={() => navigate("/")}>
+          <div className="md:text-xl text-xs font-bold cursor-pointer" onClick={() => navigate("/")}>
             My Games
           </div>
-
           <ul className="flex space-x-5 items-center">
             <li
-              className={`text-lg hover:rounded-md cursor-pointer hover:text-sky-800 duration-300 ${
+              className={`md:text-lg text-xs hover:rounded-md cursor-pointer hover:text-sky-800 duration-300 ${
                 queryPathname === "users" ? "border-b-2 border-white" : ""
               }`}
               onClick={() => navigate("/users")}
@@ -56,7 +55,7 @@ const Navbar = () => {
             </li>
             {token && (
               <li
-                className={`text-lg hover:rounded-md cursor-pointer hover:text-sky-800 duration-300 ${
+                className={`md:text-lg text-xs hover:rounded-md cursor-pointer hover:text-sky-800 duration-300 ${
                   queryPathname === "user" ? "border-b-2 border-white" : ""
                 }`}
                 onClick={() => navigate(`/user/${JSON.parse(token).uid}`)}
@@ -68,17 +67,23 @@ const Navbar = () => {
           <ul className="flex space-x-5 items-center">
             {token && queryPathname === "user" && queryPathname2 !== "game" && (
               <li className="text-lg hover:rounded-md hover:text-sky-800 duration-300">
-                <CiCirclePlus className="w-8 h-8 cursor-pointer" onClick={openModal}></CiCirclePlus>
+                <CiCirclePlus
+                  className="md:h-8 md:w-8 text-xs h-6 w-6 cursor-pointer"
+                  onClick={openModal}
+                ></CiCirclePlus>
               </li>
             )}
             {!token && (
               <li className="text-l hover:rounded-md hover:text-sky-800 duration-300">
-                <FaRegUser className="w-8 h-8 cursor-pointer" onClick={() => navigate("/auth")}></FaRegUser>
+                <FaRegUser
+                  className="md:h-8 md:w-8 text-xs h-6 w-6 cursor-pointer"
+                  onClick={() => navigate("/auth")}
+                ></FaRegUser>
               </li>
             )}
             {token && (
               <li className="text-l hover:rounded-md hover:text-sky-800 duration-300">
-                <CiLogout className="w-8 h-8 cursor-pointer" onClick={handleLogout}></CiLogout>
+                <CiLogout className="md:h-8 md:w-8 text-xs h-6 w-6 cursor-pointer" onClick={handleLogout}></CiLogout>
               </li>
             )}
           </ul>

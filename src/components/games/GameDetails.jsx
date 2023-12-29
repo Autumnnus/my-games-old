@@ -103,24 +103,24 @@ const GameDetails = () => {
     return <ReactLoading className="mx-auto w-full" type="spinningBubbles" height={375} width={375} />;
   }
   return (
-    <div className="container mx-auto mt-8">
+    <div className="sm:container mx-auto mt-8">
       {fullSSModal && <ImageModal imgModalUrl={imgModalUrl} imgModalName={imgModalName}></ImageModal>}
       {modal && <Modal setGameInfo={setGameInfo} gameInfo={gameInfo}></Modal>}
-      <div className="flex text-white">
-        <div className="flex-shrink-0">
+      <div className="flex flex-col lg:flex-row text-white">
+        <div className="flex-shrink-0 md:w-1/4">
           {gameData.data.gamePhoto === "" ? (
             <img
               src="https://s22908.pcdn.co/wp-content/uploads/2023/07/most-hyped-up-games.jpg"
               alt=""
-              className="rounded-lg object-cover h-96 w-96"
+              className="rounded-lg object-cover lg:h-auto h-96 w-96"
             />
           ) : (
             <img src={gameData.data.gamePhoto} alt="Geçersiz Url" className="rounded-lg object-cover h-96 w-96" />
           )}
         </div>
-        <div className="flex flex-col justify-center ml-8 w-full">
-          <div className="flex justify-between items-center mb-3">
-            <h2 className="text-4xl font-bold mb-4">{gameData.data?.gameName}</h2>
+        <div className="lg:flex flex-col justify-center px-4 lg:ml-8 lg:w-full mt-4 lg:mt-0">
+          <div className="lg:flex justify-between items-center mb-3">
+            <h2 className="text-4xl lg:text-5xl font-bold mb-4">{gameData.data?.gameName}</h2>
             {token && JSON.parse(token).uid === userPathId && (
               <div className="flex space-x-4 mt-2">
                 <button
@@ -181,11 +181,13 @@ const GameDetails = () => {
         </div>
       </div>
       {gameData.data.screenshots.length !== 0 && (
-        <h3 className="text-2xl font-semibold mb-4 text-white mt-8">Ekran Görüntüleri</h3>
+        <h3 className="text-2xl font-semibold mb-4 text-white mt-8">
+          Ekran Görüntüleri <span>({gameData.data.screenshots.length})</span>
+        </h3>
       )}
       {!fullSSModal && !ssModal && gameData.data.screenshots && (
         <div>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {gameData.data.screenshots.map((screenshot, index) => (
               <div key={index} className="relative mb-4 group">
                 <img

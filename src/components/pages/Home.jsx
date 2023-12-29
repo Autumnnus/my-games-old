@@ -25,7 +25,7 @@ const Home = () => {
               <p className="mb-12 text-base font-medium !leading-relaxed text-body-color dark:text-white dark:opacity-90 sm:text-lg md:text-xl">
                 Tüm kullanıcılar oynadıkları oyunlarının verilerini özgürce tutup saklayabildiği istatistik websitedir.
               </p>
-              <div className="flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
+              <div className="lg:flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
                 <Link
                   to={"/users"}
                   className="rounded-md bg-primary py-4 px-8 text-base font-semibold text-white duration-300 ease-in-out hover:bg-primary/80 hover:text-sky-800"
@@ -52,10 +52,15 @@ const Home = () => {
                 to={"https://github.com/VectortheGreat/my-games"}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-white hover:text-sky-800 flex items-center mt-6 space-x-2 duration-300"
+                className="text-white hover:text-sky-800 mt-10 lg:space-x-2 duration-300"
               >
-                <span>Bu bir açık kaynak React Javascript Projesidir. Kaynak kod için tıklayınız</span>
-                <AiFillGithub size={36} />
+                <p className="text-sm lg:text-lg">
+                  Bu bir açık kaynak React Javascript Projesidir. Kaynak kod için
+                  <span className="ml-1">
+                    tıklayınız
+                    <AiFillGithub className="h-8 w-8 lg:h-16 lg:w-16 inline-block ml-4" />
+                  </span>
+                </p>
               </Link>
             </div>
           </div>

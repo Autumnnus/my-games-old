@@ -14,6 +14,7 @@ const Signup = () => {
     password: "",
     photoUrl: "",
   });
+  const [errorMessage, setErrorMessage] = useState("");
 
   const onchangeFunc = (e) => {
     setLoginInfo((prev) => ({ ...prev, [e.target.id]: e.target.value.trimStart() }));
@@ -24,17 +25,20 @@ const Signup = () => {
     try {
       const isEmailValid = validator.isEmail(loginInfo.email);
       if (!isEmailValid) {
-        console.error("Invalid E-mail");
+        setErrorMessage("Geçersiz E-mail adresi");
+        setTimeout(() => setErrorMessage(""), 2000);
       } else if (loginInfo.password.length < 6) {
-        console.error("Password must be at least 6 characters");
+        setErrorMessage("Şifre en az 6 karakterli olmalı");
+        setTimeout(() => setErrorMessage(""), 2000);
       } else if (!loginInfo.username) {
-        console.error("Name is required");
+        setErrorMessage("Lütfen kullanıcı adı giriniz");
+        setTimeout(() => setErrorMessage(""), 2000);
       } else {
         //* AUTH
         const userCredential = await createUserWithEmailAndPassword(auth, loginInfo.email, loginInfo.password);
         const user = userCredential.user;
         await updateProfile(user, {
-          displayName: loginInfo.username,
+          displayName: loginInfo.username.trim(),
           photoURL: loginInfo.photoUrl,
         });
 
@@ -52,7 +56,9 @@ const Signup = () => {
         dispatch(toggleLoginMode());
       }
     } catch (error) {
-      console.error("Authentication failed:", error);
+      console.error("Authentication failed:", error.code);
+      setErrorMessage(`Hata : ${error.message}`);
+      setTimeout(() => setErrorMessage(""), 2000);
     }
   };
   return (
@@ -97,7 +103,7 @@ const Signup = () => {
               <form className="space-y-4" action="#" onSubmit={(e) => handleSignup(e)}>
                 <div>
                   <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                    Kullanıcı Adı
+                    Kullanıcı Adı *
                   </label>
                   <input
                     type="text"
@@ -111,7 +117,7 @@ const Signup = () => {
                 </div>
                 <div>
                   <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                    Profil Fotoğrafı Url:
+                    Profil Fotoğrafı Url
                   </label>
                   <input
                     type="text"
@@ -124,7 +130,7 @@ const Signup = () => {
                 </div>
                 <div>
                   <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                    E-mail Adresi:
+                    E-mail Adresi *
                   </label>
                   <input
                     type="email"
@@ -138,7 +144,7 @@ const Signup = () => {
                 </div>
                 <div>
                   <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                    Şifre:
+                    Şifre *
                   </label>
                   <input
                     type="password"
@@ -150,6 +156,7 @@ const Signup = () => {
                     required
                   />
                 </div>
+                <div>{errorMessage && <div className="text-rose-600">{errorMessage}</div>}</div>
                 <button
                   type="submit"
                   className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"

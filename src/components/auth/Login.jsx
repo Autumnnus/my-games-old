@@ -12,6 +12,7 @@ const Login = () => {
     email: "",
     password: "",
   });
+  const [errorMessage, setErrorMessage] = useState("");
 
   const onchangeFunc = (e) => {
     setLoginInfo((prev) => ({ ...prev, [e.target.id]: e.target.value.trimStart() }));
@@ -37,7 +38,27 @@ const Login = () => {
       navigate("/");
       window.location.reload();
     } catch (error) {
-      console.error("Authentication failed:", error);
+      console.error("Authentication failed:", error.code);
+      switch (error.code) {
+        case "auth/invalid-credential":
+          setErrorMessage("Hata : Geçersiz Kimlik Bilgisi");
+          break;
+        case "auth/user-disabled":
+          setErrorMessage("Hata : Kullanıcı Devre Dışı");
+          break;
+        case "auth/user-not-found":
+          setErrorMessage("Hata : Kullanıcı Bulunamadı");
+          break;
+        case "auth/wrong-password":
+          setErrorMessage("Hata : Yanlış Şifre");
+          break;
+
+        default:
+          setErrorMessage(`Hata : ${error.message}`);
+          break;
+      }
+
+      setTimeout(() => setErrorMessage(""), 2000);
     }
   };
   return (
@@ -108,6 +129,7 @@ const Login = () => {
                     required
                   />
                 </div>
+                <div>{errorMessage && <div className="text-rose-600">{errorMessage}</div>}</div>
                 <button
                   type="submit"
                   className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"

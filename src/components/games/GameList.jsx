@@ -9,6 +9,7 @@ import { modalFunc } from "../../redux/modalSlice";
 import GamesTableThComp from "./GamesTableThComp";
 import { gameListThElements } from "../../utils/GameListThElements";
 import ReactLoading from "react-loading";
+import logo from "../../assets/logo.png";
 
 const GameList = () => {
   const navigate = useNavigate();
@@ -160,12 +161,11 @@ const GameList = () => {
         <tbody>
           {games.map((game, index) => (
             <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700" key={index}>
-              <td className="px-4 py-4">
+              <td className="px-0 py-0 lg:px-4 lg:py-4">
                 <Link to={`/user/${userPathId}/game/${game.id}`}>
                   {game.gamePhoto === "" ? (
                     <img
-                      src={"../../../public/logo.png"}
-                      alt="Oyun"
+                      src={logo}
                       className="object-contain w-16 h-16 rounded-full hover:scale-110 transition-transform duration-300 ease-in-out"
                     />
                   ) : (
@@ -185,7 +185,21 @@ const GameList = () => {
                   {game.gameName}
                 </Link>
               </th>
-              <td className="px-6 py-4">{game.gameScore}/10</td>
+              <td
+                className={`px-6 py-4 ${
+                  game.gameScore > 8
+                    ? "text-green-600"
+                    : game.gameScore > 6
+                    ? "text-green-200"
+                    : game.gameScore > 3
+                    ? "text-yellow-300"
+                    : game.gameScore > 1
+                    ? "text-red-300"
+                    : "text-red-800"
+                }`}
+              >
+                {game.gameScore}/10
+              </td>
               <td className="px-6 py-4">{game.gamePlatform}</td>
               <td className="px-6 py-4">{game.screenshots ? game.screenshots.length : "0"}</td>
               <td className="px-6 py-4">{game.gameTotalTime ? game.gameTotalTime : "-"}</td>

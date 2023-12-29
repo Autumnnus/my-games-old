@@ -2,8 +2,9 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { collection, doc, updateDoc } from "firebase/firestore";
-import { db } from "../../config/firebaseConfig";
+import { authFBConfig, db } from "../../config/firebaseConfig";
 import { toggleUserSettingsModal } from "../../redux/modalSlice";
+import { sendEmailVerification, sendPasswordResetEmail } from "firebase/auth";
 
 const UserSettingsModal = ({ setUserInfo, userInfo }) => {
   UserSettingsModal.propTypes = {
@@ -46,6 +47,15 @@ const UserSettingsModal = ({ setUserInfo, userInfo }) => {
       photoUrl: "",
     });
   };
+  const verifyEmail = async () => {
+    await sendEmailVerification(authFBConfig.currentUser);
+  };
+  const resetPassword = async () => {
+    authFBConfig.currentUser.emailVerified
+      ? await sendPasswordResetEmail(authFBConfig, authFBConfig.currentUser.email)
+      : console.error("Email doğrulanmadı");
+  };
+
   return (
     <>
       <div
@@ -118,7 +128,25 @@ const UserSettingsModal = ({ setUserInfo, userInfo }) => {
                   ></textarea>
                 </div>
               </div>
-              <div className="col-span-2 flex justify-center">
+              <div className="col-span-2 flex justify-center space-x-2">
+                {!authFBConfig.currentUser.emailVerified && (
+                  <button
+                    className="text-white inline-flex items-center bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-600 dark:hover:bg-gray-500 dark:focus:ring-gray-800 duration-300"
+                    onClick={verifyEmail}
+                  >
+                    E-posta Doğrula
+                  </button>
+                )}
+                <button
+                  className={`text-white inline-flex items-center  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center  duration-300 ${
+                    authFBConfig.currentUser.emailVerified
+                      ? "bg-gray-700 hover:bg-gray-800 dark:bg-gray-600 dark:hover:bg-gray-500 dark:focus:ring-gray-800 cursor-pointer"
+                      : "bg-gray-500 cursor-not-allowed"
+                  }`}
+                  onClick={resetPassword}
+                >
+                  Şifre Sıfırla
+                </button>
                 <button
                   type="submit"
                   className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 duration-300"

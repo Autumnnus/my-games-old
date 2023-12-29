@@ -7,6 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import UserSettingsModal from "../modal/UserSettingsModal";
 import { toggleUserSettingsModal } from "../../redux/modalSlice";
 import ReactLoading from "react-loading";
+import logo from "../../assets/logo.png";
 
 const UserList = () => {
   const dispatch = useDispatch();
@@ -86,14 +87,17 @@ const UserList = () => {
     return <ReactLoading className="mx-auto w-full" type="spinningBubbles" height={375} width={375} />;
   }
   return (
-    <div>
+    <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
       {userSettingsModal && <UserSettingsModal setUserInfo={setUserInfo} userInfo={userInfo}></UserSettingsModal>}
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <caption className="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white dark:text-white dark:bg-gray-800">
           <div className="flex justify-between">
             <span>Tüm Üyeler</span>
             {token && (
-              <p className="hover:text-sky-800 duration-300 cursor-pointer" onClick={openUserSettingsModal}>
+              <p
+                className="hover:text-sky-800 duration-300 cursor-pointer text-sm lg:text-lg"
+                onClick={openUserSettingsModal}
+              >
                 Profili Düzenle
               </p>
             )}
@@ -119,11 +123,11 @@ const UserList = () => {
         <tbody>
           {users.map((user, index) => (
             <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700" key={index}>
-              <td className="px-4 py-4">
+              <td className="px-0 py-0 lg:px-4 lg:py-4">
                 <Link to={`/user/${user.id}`} className="hover:text-sky-800 duration-150 cursor-pointer">
                   {user.data.photoUrl === "" ? (
                     <img
-                      src={"../../../public/logo.png"}
+                      src={logo}
                       alt="Kullanıcı Fotoğrafı"
                       className="object-cover w-16 h-16 rounded-full hover:scale-110 transition-transform duration-300 ease-in-out"
                     />

@@ -1,8 +1,43 @@
-# React + Vite
+# My Games
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a React Javascript Project about gamers who will store their game statics freely.
 
-Currently, two official plugins are available:
+- [Demo](https://my-games.netlify.app/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features:
+
+- **Membership System**
+- **Dynamically adding and updating User, Screenshot, and Game information**
+- **All categories prepared for games include: Name, Photo, Score, Platform, SS, Playtime, Last Gameplay, Status, and Review**
+- **Sort Filter in Games Page**
+
+## Usage:
+
+1. Open your terminal and run:
+
+   ```bash
+   npm install
+
+   ```
+
+2. Create a .env file in your project and add your Firebase Configs:
+
+   ```bash
+   VITE_FIREBASE_API_KEY=your_config
+   VITE_FIREBASE_AUTH_DOMAIN=your_config
+   VITE_FIREBASE_PROJECT_ID=your_config
+   VITE_FIREBASE_STORAGE_BUCKET=your_config
+   VITE_FIREBASE_MESSAGING_SENDER_ID=your_config
+   VITE_FIREBASE_APP_ID=1:your_config
+   VITE_FIREBASE_MEASUREMENT_ID=your_config
+   VITE_FIREBASE_DATABASE_URL=your_config
+
+   ```
+
+3. Once your .env file is set up, run the project with:
+
+   ```bash
+   npm run dev
+   ```
+
+Explore and enjoy the My Games experience! Feel free to contribute and make this project even better.
