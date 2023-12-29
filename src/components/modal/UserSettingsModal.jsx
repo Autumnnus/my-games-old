@@ -100,12 +100,12 @@ const UserSettingsModal = ({ setUserInfo, userInfo }) => {
               <div className="grid gap-4 mb-4 grid-cols-2">
                 <div className="col-span-2">
                   <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                    Name
+                    Kullanıcı Adı *
                   </label>
                   <input
                     type="text"
                     value={userInfo.name}
-                    placeholder="Oyun İsmi (Zorunlu)"
+                    placeholder="Kullanıcı Adı (Zorunlu)"
                     name="name"
                     id="name"
                     onChange={(e) => onchangeFunc(e)}
@@ -115,7 +115,7 @@ const UserSettingsModal = ({ setUserInfo, userInfo }) => {
                 </div>
                 <div className="col-span-2">
                   <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                    Oyun İncelemesi
+                    Profil Fotoğrafı Url
                   </label>
                   <textarea
                     name="photoUrl"

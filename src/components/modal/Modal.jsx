@@ -1,4 +1,4 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { modalFunc } from "../../redux/modalSlice";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -18,14 +18,16 @@ const Modal = ({ setGameInfo, gameInfo }) => {
       date: PropTypes.string,
       review: PropTypes.string,
       gameStatus: PropTypes.string,
-      gameTotalTime: PropTypes.string,
+      gameTotalTime: PropTypes.number,
     }).isRequired,
   };
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const docId = location.search.split("=")[1];
-
+  const userId = location.pathname.split("/")[2];
+  const token = useSelector((state) => state.auth.token);
+  const [message, setMessage] = useState("");
   const [toggleWarningModal, setToggleWarningModal] = useState(false);
 
   const closeModal = () => {
@@ -39,7 +41,7 @@ const Modal = ({ setGameInfo, gameInfo }) => {
       date: "",
       review: "",
       gameStatus: "Bitirildi",
-      gameTotalTime: "",
+      gameTotalTime: null,
     });
   };
   const onchangeFunc = (e) => {
@@ -52,6 +54,11 @@ const Modal = ({ setGameInfo, gameInfo }) => {
   const querySearch = location.search.split("?")[1].split("=")[0];
   const uploadToFirestore = async (e) => {
     e.preventDefault();
+    if (JSON.parse(token).uid !== userId) {
+      setMessage("Uyuşmayan Kullanıcı Bilgileri");
+      setTimeout(() => setMessage(""), 2000);
+      return console.error("Uyuşmayan Kullanıcı Bilgileri");
+    }
     const gamesRef = collection(db, "games");
     const gameDocRef = doc(gamesRef, docId);
     const gamesQuery = query(gamesRef);
@@ -65,7 +72,7 @@ const Modal = ({ setGameInfo, gameInfo }) => {
         gameDate: gameInfo.date,
         gameReview: gameInfo.review.trim(),
         gameStatus: gameInfo.gameStatus,
-        gameTotalTime: gameInfo.gameTotalTime,
+        gameTotalTime: parseInt(gameInfo.gameTotalTime),
         screenshots: [],
         createdAt: serverTimestamp(),
         userId: authFBConfig.lastNotifiedUid,
@@ -80,7 +87,7 @@ const Modal = ({ setGameInfo, gameInfo }) => {
           gameDate: gameInfo.date,
           gameReview: gameInfo.review.trim(),
           gameStatus: gameInfo.gameStatus,
-          gameTotalTime: gameInfo.gameTotalTime,
+          gameTotalTime: parseInt(gameInfo.gameTotalTime),
           screenshots: [],
           createdAt: serverTimestamp(),
           userId: authFBConfig.lastNotifiedUid,
@@ -94,7 +101,7 @@ const Modal = ({ setGameInfo, gameInfo }) => {
           gameDate: gameInfo.date,
           gameReview: gameInfo.review.trim(),
           gameStatus: gameInfo.gameStatus,
-          gameTotalTime: gameInfo.gameTotalTime,
+          gameTotalTime: parseInt(gameInfo.gameTotalTime),
         });
         closeModal();
       } else {
@@ -109,7 +116,7 @@ const Modal = ({ setGameInfo, gameInfo }) => {
       date: "",
       review: "",
       gameStatus: "Bitirildi",
-      gameTotalTime: "",
+      gameTotalTime: null,
     });
   };
   const deleteFromFirestore = async () => {
@@ -343,6 +350,7 @@ const Modal = ({ setGameInfo, gameInfo }) => {
                     ></textarea>
                   </div>
                 </div>
+                <div>{message && <div className="text-rose-600">{message}</div>}</div>
                 <div className="col-span-2 flex justify-center">
                   <button
                     type="submit"

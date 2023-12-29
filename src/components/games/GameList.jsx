@@ -22,9 +22,10 @@ const GameList = () => {
   const [sortOrder, setSortOrder] = useState("desc");
   const token = useSelector((state) => state.auth.token);
   const modal = useSelector((state) => state.modal.modal);
+  const [hoveredRow, setHoveredRow] = useState(null);
   const [user, setUser] = useState({});
   //prettier-ignore
-  const [gameInfo, setGameInfo] = useState({ name: "", gamePhoto: "", score: 0, platform: "Steam", date: "", review: "", gameStatus: "Bitirildi", gameTotalTime: ""});
+  const [gameInfo, setGameInfo] = useState({ name: "", gamePhoto: "", score: 0, platform: "Steam", date: "", review: "", gameStatus: "Bitirildi", gameTotalTime: 0});
   const editGameInfo = (index) => {
     dispatch(modalFunc());
     setGameInfo({
@@ -160,7 +161,12 @@ const GameList = () => {
         </thead>
         <tbody>
           {games.map((game, index) => (
-            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700" key={index}>
+            <tr
+              className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+              key={index}
+              onMouseEnter={() => setHoveredRow(index)}
+              onMouseLeave={() => setHoveredRow(null)}
+            >
               <td className="px-0 py-0 lg:px-4 lg:py-4">
                 <Link to={`/user/${userPathId}/game/${game.id}`}>
                   {game.gamePhoto === "" ? (
@@ -204,11 +210,25 @@ const GameList = () => {
               <td className="px-6 py-4">{game.screenshots ? game.screenshots.length : "0"}</td>
               <td className="px-6 py-4">{game.gameTotalTime ? game.gameTotalTime : "-"}</td>
               <td className="px-6 py-4">{game.gameDate ? game.gameDate : "-"}</td>
-              <td className="px-6 py-4 relative">
+              <td
+                className={`px-6 py-4 relative ${
+                  game.gameStatus === "Bitirildi"
+                    ? "text-green-600"
+                    : game.gameStatus === "Bitirilecek"
+                    ? "text-yellow-300"
+                    : game.gameStatus === "Aktif Oynanılıyor"
+                    ? "text-sky-500"
+                    : game.gameStatus === "Bırakıldı"
+                    ? "text-red-800"
+                    : "text-gray-500"
+                }`}
+              >
                 {game.gameStatus}{" "}
                 {token && JSON.parse(token).uid === userPathId && (
                   <FaPen
-                    className="absolute top-3 right-3 cursor-pointer hover:text-sky-800 duration-150"
+                    className={`absolute top-3 right-3 cursor-pointer transition-opacity duration-300 text-gray-500 ${
+                      hoveredRow === index ? "opacity-100" : "opacity-0"
+                    }`}
                     onClick={() => editGameInfo(index)}
                   ></FaPen>
                 )}

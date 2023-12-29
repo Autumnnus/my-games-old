@@ -37,7 +37,7 @@ const GameDetails = () => {
     date: "",
     review: "",
     gameStatus: "Bitirildi",
-    gameTotalTime: "",
+    gameTotalTime: null,
     dateEnd: "",
   });
 
