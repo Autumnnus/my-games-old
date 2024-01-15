@@ -10,6 +10,8 @@ This is a React Javascript Project about gamers who will store their game static
 - **Dynamically adding and updating User, Screenshot, and Game information**
 - **All categories prepared for games include: Name, Photo, Score, Platform, SS, Playtime, Last Gameplay, Status, and Review**
 - **Sort Filter in Games Page**
+- **Can Search Games**
+- **Admin Can Delete Users' Datas**
 
 ## Usage:
 

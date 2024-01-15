@@ -1,3 +1,5 @@
+import { BiTrash } from "react-icons/bi";
+import { RiAdminFill } from "react-icons/ri";
 import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,6 +10,7 @@ import UserSettingsModal from "../modal/UserSettingsModal";
 import { toggleUserSettingsModal } from "../../redux/modalSlice";
 import ReactLoading from "react-loading";
 import logo from "../../assets/logo.png";
+import WarningDeleteUser from "./WarningDeleteUser";
 
 const UserList = () => {
   const dispatch = useDispatch();
@@ -18,6 +21,9 @@ const UserList = () => {
   const [userInfo, setUserInfo] = useState({ name: "", photoUrl: "" });
   const [userGames, setUserGames] = useState([]);
   const [userSS, setUserSS] = useState([]);
+  const [loggedUser, setLoggedUser] = useState(users.find((user) => user.id === JSON.parse(token).uid));
+  const [adminMode, setAdminMode] = useState(false);
+  const [toggleWarningModal, setToggleWarningModal] = useState(false);
   const fetchUsers = async () => {
     const usersCollectionRef = collection(db, "users");
     const querySnapshot = await getDocs(usersCollectionRef);
@@ -30,6 +36,7 @@ const UserList = () => {
 
   useEffect(() => {
     fetchUsers();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
@@ -72,6 +79,7 @@ const UserList = () => {
     };
     updateUserGameSizes();
     updateUserGameSSSizes();
+    setLoggedUser(users.find((user) => user.id === JSON.parse(token).uid));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [users]);
   const openUserSettingsModal = () => {
@@ -83,23 +91,42 @@ const UserList = () => {
       photoUrl: foundUser.data.photoUrl,
     });
   };
+  const warningDeleteUserFunc = (e) => {
+    setToggleWarningModal(true);
+    navigate(`?userDelete=${e}`);
+  };
   if (users.length === 0) {
     return <ReactLoading className="mx-auto w-full" type="spinningBubbles" height={375} width={375} />;
   }
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
       {userSettingsModal && <UserSettingsModal setUserInfo={setUserInfo} userInfo={userInfo}></UserSettingsModal>}
+      {toggleWarningModal && (
+        <WarningDeleteUser setToggleWarningModal={setToggleWarningModal} loggedUser={loggedUser}></WarningDeleteUser>
+      )}
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <caption className="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white dark:text-white dark:bg-gray-800">
           <div className="flex justify-between">
             <span>Tüm Üyeler</span>
             {token && (
-              <p
-                className="hover:text-sky-800 duration-300 cursor-pointer text-sm lg:text-lg"
-                onClick={openUserSettingsModal}
-              >
-                Profili Düzenle
-              </p>
+              <div className="space-x-5 flex items-center">
+                {loggedUser?.data.role === "admin" && (
+                  <RiAdminFill
+                    className={`hover:text-sky-800 duration-300 cursor-pointer ${
+                      !adminMode ? "text-green-700" : "text-red-500"
+                    }`}
+                    size={20}
+                    onClick={() => setAdminMode(!adminMode)}
+                  />
+                )}
+
+                <span
+                  className="hover:text-sky-800 duration-300 cursor-pointer text-sm lg:text-lg"
+                  onClick={openUserSettingsModal}
+                >
+                  Profili Düzenle
+                </span>
+              </div>
             )}
           </div>
         </caption>
@@ -142,9 +169,21 @@ const UserList = () => {
               </td>
 
               <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                <Link to={`/user/${user.id}`} className="hover:text-sky-800 duration-150 cursor-pointer">
-                  {user.data.name}
-                </Link>
+                <div className="flex items-center space-x-3">
+                  <Link to={`/user/${user.id}`} className="hover:text-sky-800 duration-150 cursor-pointer">
+                    {user.data.name}
+                    {user.data.role === "admin" && (
+                      <span className="text-red-500 hover:text-rose-800 duration-150"> (Admin)</span>
+                    )}
+                  </Link>
+                  {user.data.role === "user" && adminMode && (
+                    <BiTrash
+                      className="text-red-500 hover:text-red-800 cursor-pointer"
+                      size={18}
+                      onClick={() => warningDeleteUserFunc(user.id)}
+                    />
+                  )}
+                </div>
               </th>
               <td className="px-6 py-4 text-center">
                 {userGames.find((game) => game.userId === user.id)?.gameSizes.length}

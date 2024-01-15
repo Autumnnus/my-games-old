@@ -1,7 +1,6 @@
 import { collection, getDocs, onSnapshot, orderBy, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { FaPen } from "react-icons/fa";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { db } from "../../config/firebaseConfig";
 import { useDispatch, useSelector } from "react-redux";
 import Modal from "../modal/Modal";
@@ -9,37 +8,60 @@ import { modalFunc } from "../../redux/modalSlice";
 import GamesTableThComp from "./GamesTableThComp";
 import { gameListThElements } from "../../utils/GameListThElements";
 import ReactLoading from "react-loading";
-import logo from "../../assets/logo.png";
+import Searching from "./Searching";
+import { getGames } from "../../redux/gameSlice";
+import GameTableRow from "./GameTableRow";
 
 const GameList = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const searchParam = queryParams.get("search");
   const userPathId = location.pathname.split("/")[2];
   const gamesRef = collection(db, "games");
-  const [games, setGames] = useState([]);
+
   const [filterValue, setFilterValue] = useState("-gameDate");
   const [sortOrder, setSortOrder] = useState("desc");
-  const token = useSelector((state) => state.auth.token);
-  const modal = useSelector((state) => state.modal.modal);
   const [hoveredRow, setHoveredRow] = useState(null);
   const [user, setUser] = useState({});
+
+  const games = useSelector((state) => state.games.games);
+  const token = useSelector((state) => state.auth.token);
+  const modal = useSelector((state) => state.modal.modal);
+  const searchedGames = useSelector((state) => state.games.searchedGames);
+
   //prettier-ignore
   const [gameInfo, setGameInfo] = useState({ name: "", gamePhoto: "", score: 0, platform: "Steam", date: "", review: "", gameStatus: "Bitirildi", gameTotalTime: 0});
   const editGameInfo = (index) => {
     dispatch(modalFunc());
-    setGameInfo({
-      name: games[index].gameName,
-      gamePhoto: games[index].gamePhoto,
-      score: games[index].gameScore,
-      platform: games[index].gamePlatform,
-      date: games[index].gameDate,
-      review: games[index].gameReview,
-      gameStatus: games[index].gameStatus,
-      gameTotalTime: games[index].gameTotalTime,
-      dateEnd: games[index].dateEnd,
-    });
-    navigate(`?edit=${games[index].id}`);
+    if (searchParam) {
+      setGameInfo({
+        name: searchedGames[index].gameName,
+        gamePhoto: searchedGames[index].gamePhoto,
+        score: searchedGames[index].gameScore,
+        platform: searchedGames[index].gamePlatform,
+        date: searchedGames[index].gameDate,
+        review: searchedGames[index].gameReview,
+        gameStatus: searchedGames[index].gameStatus,
+        gameTotalTime: searchedGames[index].gameTotalTime,
+        dateEnd: searchedGames[index].dateEnd,
+      });
+      navigate(`?search=${searchParam}&edit=${searchedGames[index].id}`);
+    } else {
+      setGameInfo({
+        name: games[index].gameName,
+        gamePhoto: games[index].gamePhoto,
+        score: games[index].gameScore,
+        platform: games[index].gamePlatform,
+        date: games[index].gameDate,
+        review: games[index].gameReview,
+        gameStatus: games[index].gameStatus,
+        gameTotalTime: games[index].gameTotalTime,
+        dateEnd: games[index].dateEnd,
+      });
+      navigate(`?edit=${games[index].id}`);
+    }
   };
 
   const fetchUser = async () => {
@@ -87,7 +109,7 @@ const GameList = () => {
       snapshot.forEach((doc) => {
         updatedGames.push({ ...doc.data(), id: doc.id });
       });
-      updatedGames.length === 0 ? setGames("Empty") : setGames(updatedGames);
+      updatedGames.length === 0 ? dispatch(getGames("Empty")) : dispatch(getGames(updatedGames));
     });
     return () => unsuscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -132,19 +154,26 @@ const GameList = () => {
         <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
           <strong>{user.name}</strong> henüz oyun eklememiş
         </p>
-        <div>{modal && <Modal setGameInfo={setGameInfo} gameInfo={gameInfo}></Modal>}</div>
+        <div>{modal && <Modal setGameInfo={setGameInfo} gameInfo={gameInfo} />}</div>
       </div>
     );
   }
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-      <div>{modal && <Modal setGameInfo={setGameInfo} gameInfo={gameInfo}></Modal>}</div>
+      <div>{modal && <Modal setGameInfo={setGameInfo} gameInfo={gameInfo} searchParam={searchParam}></Modal>}</div>
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <caption className="p-5 text-xl font-semibold text-left rtl:text-right text-gray-900 bg-white dark:text-white dark:bg-gray-800">
-          Oyunlar
-          <p className="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
-            <strong>{user.name}</strong> tarafından oynanılan tüm oyunlar
-          </p>
+          <div className="flex justify-between">
+            <span>
+              Oyunlar
+              <p className="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400 flex justify-between">
+                <span>
+                  <strong>{user.name}</strong> tarafından oynanılan tüm oyunlar
+                </span>
+              </p>
+            </span>
+            <Searching />
+          </div>
         </caption>
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
@@ -160,80 +189,17 @@ const GameList = () => {
           </tr>
         </thead>
         <tbody>
-          {games.map((game, index) => (
-            <tr
-              className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+          {(searchParam ? searchedGames : games).map((game, index) => (
+            <GameTableRow
               key={index}
-              onMouseEnter={() => setHoveredRow(index)}
-              onMouseLeave={() => setHoveredRow(null)}
-            >
-              <td className="px-0 py-0 lg:px-4 lg:py-4">
-                <Link to={`/user/${userPathId}/game/${game.id}`}>
-                  {game.gamePhoto === "" ? (
-                    <img
-                      src={logo}
-                      className="object-contain w-16 h-16 rounded-full hover:scale-110 transition-transform duration-300 ease-in-out"
-                    />
-                  ) : (
-                    <img
-                      src={game.gamePhoto}
-                      alt="Geçersiz Fotoğraf Url"
-                      className="object-cover w-16 h-16 rounded-full hover:scale-110 transition-transform duration-300 ease-in-out"
-                    />
-                  )}
-                </Link>
-              </td>
-              <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                <Link
-                  to={`/user/${userPathId}/game/${game.id}`}
-                  className="hover:text-sky-800 duration-150 cursor-pointer"
-                >
-                  {game.gameName}
-                </Link>
-              </th>
-              <td
-                className={`px-6 py-4 ${
-                  game.gameScore > 8
-                    ? "text-green-600"
-                    : game.gameScore > 6
-                    ? "text-green-200"
-                    : game.gameScore > 3
-                    ? "text-yellow-300"
-                    : game.gameScore > 1
-                    ? "text-red-300"
-                    : "text-red-800"
-                }`}
-              >
-                {game.gameScore}/10
-              </td>
-              <td className="px-6 py-4">{game.gamePlatform}</td>
-              <td className="px-6 py-4">{game.screenshots ? game.screenshots.length : "0"}</td>
-              <td className="px-6 py-4">{game.gameTotalTime ? game.gameTotalTime : "-"}</td>
-              <td className="px-6 py-4">{game.gameDate ? game.gameDate : "-"}</td>
-              <td
-                className={`px-6 py-4 relative ${
-                  game.gameStatus === "Bitirildi"
-                    ? "text-green-600"
-                    : game.gameStatus === "Bitirilecek"
-                    ? "text-yellow-300"
-                    : game.gameStatus === "Aktif Oynanılıyor"
-                    ? "text-sky-500"
-                    : game.gameStatus === "Bırakıldı"
-                    ? "text-red-800"
-                    : "text-gray-500"
-                }`}
-              >
-                {game.gameStatus}{" "}
-                {token && JSON.parse(token).uid === userPathId && (
-                  <FaPen
-                    className={`absolute top-3 right-3 cursor-pointer transition-opacity duration-300 text-gray-500 ${
-                      hoveredRow === index ? "opacity-100" : "opacity-0"
-                    }`}
-                    onClick={() => editGameInfo(index)}
-                  ></FaPen>
-                )}
-              </td>
-            </tr>
+              game={game}
+              userPathId={userPathId}
+              token={token}
+              index={index}
+              hoveredRow={hoveredRow}
+              setHoveredRow={setHoveredRow}
+              editGameInfo={editGameInfo}
+            />
           ))}
         </tbody>
       </table>
