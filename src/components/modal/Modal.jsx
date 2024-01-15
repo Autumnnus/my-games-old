@@ -56,7 +56,6 @@ const Modal = ({ setGameInfo, gameInfo, searchParam }) => {
       [e.target.name]: e.target.value.trimStart(),
     }));
   };
-  console.log(parseFloat(parseFloat(gameInfo.score).toFixed(1)));
   const uploadToFirestore = async (e) => {
     e.preventDefault();
     if (JSON.parse(token).uid !== userId) {
@@ -65,7 +64,6 @@ const Modal = ({ setGameInfo, gameInfo, searchParam }) => {
       return console.error("Uyuşmayan Kullanıcı Bilgileri");
     }
     const gamesRef = collection(db, "games");
-    const gameDocRef = doc(gamesRef, docId);
     const gamesQuery = query(gamesRef);
     const gamesSnapshot = await getDocs(gamesQuery);
     if (gamesSnapshot.empty) {
@@ -98,6 +96,7 @@ const Modal = ({ setGameInfo, gameInfo, searchParam }) => {
           userId: authFBConfig.lastNotifiedUid,
         });
       } else if (!createParam && editParam) {
+        const gameDocRef = doc(gamesRef, docId);
         await updateDoc(gameDocRef, {
           gameName: gameInfo.name.trim(),
           gamePhoto: gameInfo.gamePhoto.trim(),
