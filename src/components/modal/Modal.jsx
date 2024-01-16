@@ -70,7 +70,7 @@ const Modal = ({ setGameInfo, gameInfo, searchParam }) => {
       await addDoc(gamesRef, {
         gameName: gameInfo.name.trim(),
         gamePhoto: gameInfo.gamePhoto.trim(),
-        gameScore: parseFloat(gameInfo.score),
+        gameScore: gameInfo.score && gameInfo.score < 10 ? parseFloat(parseFloat(gameInfo.score).toFixed(1)) : 10,
         gamePlatform: gameInfo.platform,
         gameDate: gameInfo.date,
         gameReview: gameInfo.review.trim(),
@@ -85,7 +85,7 @@ const Modal = ({ setGameInfo, gameInfo, searchParam }) => {
         await addDoc(gamesRef, {
           gameName: gameInfo.name.trim(),
           gamePhoto: gameInfo.gamePhoto.trim(),
-          gameScore: gameInfo.score ? parseFloat(parseFloat(gameInfo.score).toFixed(1)) : 0,
+          gameScore: gameInfo.score && gameInfo.score < 10 ? parseFloat(parseFloat(gameInfo.score).toFixed(1)) : 10,
           gamePlatform: gameInfo.platform,
           gameDate: gameInfo.date,
           gameReview: gameInfo.review.trim(),
@@ -100,7 +100,7 @@ const Modal = ({ setGameInfo, gameInfo, searchParam }) => {
         await updateDoc(gameDocRef, {
           gameName: gameInfo.name.trim(),
           gamePhoto: gameInfo.gamePhoto.trim(),
-          gameScore: gameInfo.score ? parseFloat(parseFloat(gameInfo.score).toFixed(1)) : 0,
+          gameScore: gameInfo.score && gameInfo.score < 10 ? parseFloat(parseFloat(gameInfo.score).toFixed(1)) : 10,
           gamePlatform: gameInfo.platform,
           gameDate: gameInfo.date,
           gameReview: gameInfo.review.trim(),
