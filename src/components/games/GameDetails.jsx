@@ -8,8 +8,8 @@ import { modalFunc, toggleSSModal, togglefullSSModal } from "../../redux/modalSl
 import ScreenShotModal from "../modal/ScreenShotModal";
 import ImageModal from "../modal/ImageModal";
 import Modal from "../modal/Modal";
-import ReactLoading from "react-loading";
 import CircleRightComp from "../CircleRightComp";
+import GameDetailSkeleton from "../skeleton/GameDetailSkeleton";
 
 const GameDetails = () => {
   const location = useLocation();
@@ -100,7 +100,7 @@ const GameDetails = () => {
     navigate(`?edit=${gameData?.id}`);
   };
   if (!gameData) {
-    return <ReactLoading className="mx-auto w-full" type="spinningBubbles" height={375} width={375} />;
+    return <GameDetailSkeleton />;
   }
   return (
     <div className="sm:container mx-auto mt-8">

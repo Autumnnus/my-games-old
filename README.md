@@ -12,6 +12,7 @@ This is a React Javascript Project about gamers who will store their game static
 - **Sort Filter in Games Page**
 - **Can Search Games**
 - **Admin Can Delete Users' Datas**
+- **Users Can Download Their Game Datas with JSON Format**
 
 ## Usage:
 

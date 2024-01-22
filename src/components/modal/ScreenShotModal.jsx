@@ -39,11 +39,13 @@ const ScreenShotModal = ({ setSSInfo, ssInfo }) => {
       ssName: "",
     });
   };
+
   const generateUniqueID = () => {
     const randomString = Math.random().toString(36).substring(2, 10);
     const timestamp = new Date().getTime().toString(36);
     return randomString + timestamp;
   };
+
   const uploadToFirestore = async (e) => {
     e.preventDefault();
     const gamesRef = collection(db, "games");
@@ -82,6 +84,7 @@ const ScreenShotModal = ({ setSSInfo, ssInfo }) => {
       ssName: "",
     });
   };
+
   const deleteSSFromFirestore = async () => {
     const gamesRef = collection(db, "games");
     const gameDocRef = doc(gamesRef, gameId);
