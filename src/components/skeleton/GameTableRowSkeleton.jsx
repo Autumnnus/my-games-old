@@ -15,7 +15,7 @@ const GameTableRowSkeleton = ({ rowCount }) => {
   const rows = Array.from({ length: rowCount }, (_, index) => (
     <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
       <SkeletonCell width="4rem" height="4rem" />
-      <SkeletonHeaderCell width="8rem" height="1.5rem" />
+      <SkeletonHeaderCell width="18rem" height="1.5rem" />
       <SkeletonHeaderCell width="3.5rem" height="1.5rem" />
       <SkeletonHeaderCell width="5rem" height="1.5rem" />
       <SkeletonHeaderCell width="3rem" height="1.5rem" />

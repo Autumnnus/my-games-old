@@ -51,7 +51,7 @@ const ScreenShotModal = ({ setSSInfo, ssInfo }) => {
     const gamesRef = collection(db, "games");
     const gameDocRef = doc(gamesRef, gameId);
     const gameDoc = await getDoc(gameDocRef);
-
+    //! console.log(gameDoc.data().screenshots);
     if (searchKey === "create") {
       const updatedScreenshots = [
         ...gameDoc.data().screenshots,

@@ -18,9 +18,10 @@ const GameList = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
+  const pathName = location.pathname.split("/")[1];
+  const userPathId = location.pathname.split("/")[2];
   const queryParams = new URLSearchParams(location.search);
   const searchParam = queryParams.get("search");
-  const userPathId = location.pathname.split("/")[2];
   const gamesRef = collection(db, "games");
 
   //* States
@@ -119,7 +120,7 @@ const GameList = () => {
     });
     return () => unsuscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterValue, location, sortOrder]);
+  }, [filterValue, pathName, userPathId, sortOrder]);
 
   const filterDatas = (e) => {
     const clickedValue = e.target?.innerText;

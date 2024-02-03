@@ -19,10 +19,10 @@ const Home = () => {
               className="wow fadeInUp mx-auto max-w-[800px] text-center flex flex-col items-center"
               data-wow-delay=".2s"
             >
-              <h1 className="mb-5 text-3xl font-bold leading-tight text-black dark:text-white sm:text-4xl sm:leading-tight md:text-5xl md:leading-tight">
+              <h1 className="mb-5 text-3xl font-bold leading-tight text-white sm:text-4xl sm:leading-tight md:text-5xl md:leading-tight">
                 My Games'e Hoşgeldiniz
               </h1>
-              <p className="mb-12 text-base font-medium !leading-relaxed text-body-color dark:text-white dark:opacity-90 sm:text-lg md:text-xl">
+              <p className="mb-12 text-base font-medium !leading-relaxed text-body-color text-white dark:opacity-90 sm:text-lg md:text-xl">
                 Tüm kullanıcılar oynadıkları oyunlarının verilerini özgürce tutup saklayabildiği istatistik websitedir.
               </p>
               <div className="lg:flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
@@ -35,14 +35,14 @@ const Home = () => {
                 {token ? (
                   <Link
                     to={`/user/${JSON.parse(token).uid}`}
-                    className="rounded-md bg-black/20 py-4 px-8 text-base font-semibold text-black duration-300 ease-in-out hover:bg-black/30 dark:bg-white/20 dark:text-white dark:hover:bg-white/30"
+                    className="rounded-md bg-black/20 py-4 px-8 text-base font-semibold text-white duration-300 ease-in-out hover:bg-black/30 dark:bg-white/20 dark:text-white dark:hover:bg-white/30"
                   >
                     Profil
                   </Link>
                 ) : (
                   <Link
                     to={"/auth"}
-                    className="rounded-md bg-black/20 py-4 px-8 text-base font-semibold text-black duration-300 ease-in-out hover:bg-black/30 dark:bg-white/20 dark:text-white dark:hover:bg-white/30"
+                    className="rounded-md bg-black/20 py-4 px-8 text-base font-semibold text-white duration-300 ease-in-out hover:bg-black/30 dark:bg-white/20 dark:text-white dark:hover:bg-white/30"
                   >
                     Giriş Yap
                   </Link>
