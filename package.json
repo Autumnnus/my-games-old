@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "proxy": "http://localhost:8080",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -11,7 +12,8 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.0.1",
-    "axios": "^1.6.3",
+    "axios": "^1.6.7",
+    "cors-anywhere": "^0.4.4",
     "firebase": "^10.7.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { db } from "../../config/firebaseConfig";
 import { useDispatch, useSelector } from "react-redux";
-import Modal from "../modal/Modal";
+import GameModal from "../modal/game-modal/GameModal";
 import { modalFunc } from "../../redux/modalSlice";
 import GamesTableThComp from "./GamesTableThComp";
 import { gameListThElements } from "../../utils/GameListThElements";
@@ -50,7 +50,6 @@ const GameList = () => {
         review: searchedGames[index].gameReview,
         gameStatus: searchedGames[index].gameStatus,
         gameTotalTime: searchedGames[index].gameTotalTime,
-        dateEnd: searchedGames[index].dateEnd,
       });
       navigate(`?search=${searchParam}&edit=${searchedGames[index].id}`);
     } else {
@@ -63,7 +62,6 @@ const GameList = () => {
         review: games[index].gameReview,
         gameStatus: games[index].gameStatus,
         gameTotalTime: games[index].gameTotalTime,
-        dateEnd: games[index].dateEnd,
       });
       navigate(`?edit=${games[index].id}`);
     }
@@ -175,14 +173,16 @@ const GameList = () => {
         <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
           <strong>{user.name}</strong> henüz oyun eklememiş
         </p>
-        <div>{modal && <Modal setGameInfo={setGameInfo} gameInfo={gameInfo} />}</div>
+        <div>{modal && <GameModal setGameInfo={setGameInfo} gameInfo={gameInfo} />}</div>
       </div>
     );
   }
 
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-      <div>{modal && <Modal setGameInfo={setGameInfo} gameInfo={gameInfo} searchParam={searchParam}></Modal>}</div>
+      <div>
+        {modal && <GameModal setGameInfo={setGameInfo} gameInfo={gameInfo} searchParam={searchParam}></GameModal>}
+      </div>
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <caption className="p-5 text-xl font-semibold text-left rtl:text-right text-gray-900 bg-white dark:text-white dark:bg-gray-800">
           <div className="flex justify-between">

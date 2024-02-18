@@ -1,15 +1,19 @@
 import { useDispatch, useSelector } from "react-redux";
 import { FaRegTrashAlt } from "react-icons/fa";
-import { modalFunc } from "../../redux/modalSlice";
+import { modalFunc } from "../../../redux/modalSlice";
 import { useLocation, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
-import { authFBConfig, db } from "../../config/firebaseConfig";
+import { authFBConfig, db } from "../../../config/firebaseConfig";
 import { addDoc, collection, deleteDoc, doc, getDocs, query, serverTimestamp, updateDoc } from "firebase/firestore";
-import WarningModal from "./WarningModal";
+import WarningModal from "../WarningModal";
 import { useState } from "react";
 import { Tooltip } from "react-tooltip";
-const Modal = ({ setGameInfo, gameInfo, searchParam }) => {
-  Modal.propTypes = {
+import { GameModalInput } from "./inputs/GameModalInput";
+import { GameModalSelect } from "./inputs/GameModalSelect";
+import { gameStatus, platforms } from "../../../utils/GameModalSelectOptions";
+import { GameModalTextArea } from "./inputs/GameModalTextArea";
+const GameModal = ({ setGameInfo, gameInfo, searchParam }) => {
+  GameModal.propTypes = {
     setGameInfo: PropTypes.func.isRequired,
     searchParam: PropTypes.string.isRequired,
     gameInfo: PropTypes.shape({
@@ -35,6 +39,7 @@ const Modal = ({ setGameInfo, gameInfo, searchParam }) => {
   const token = useSelector((state) => state.auth.token);
   const [message, setMessage] = useState("");
   const [toggleWarningModal, setToggleWarningModal] = useState(false);
+  const [apiSearch, setApiSearch] = useState(true);
 
   const closeModal = () => {
     dispatch(modalFunc());
@@ -50,12 +55,25 @@ const Modal = ({ setGameInfo, gameInfo, searchParam }) => {
       gameTotalTime: null,
     });
   };
+
   const onchangeFunc = (e) => {
-    setGameInfo((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value.trimStart(),
-    }));
+    const inputValue = e.target.value.trimStart();
+    if (e.target.name === "name" && inputValue.length <= 45) {
+      console.log(true);
+      setGameInfo((prev) => ({
+        ...prev,
+        [e.target.name]: inputValue,
+      }));
+    }
+    if (e.target.name !== "name") {
+      console.log(false);
+      setGameInfo((prev) => ({
+        ...prev,
+        [e.target.name]: inputValue,
+      }));
+    }
   };
+
   const uploadToFirestore = async (e) => {
     e.preventDefault();
     if (JSON.parse(token).uid !== userId) {
@@ -75,7 +93,7 @@ const Modal = ({ setGameInfo, gameInfo, searchParam }) => {
         gameDate: gameInfo.date,
         gameReview: gameInfo.review.trim(),
         gameStatus: gameInfo.gameStatus,
-        gameTotalTime: parseFloat(gameInfo.gameTotalTime),
+        gameTotalTime: parseFloat(gameInfo.gameTotalTime).toFixed(1),
         screenshots: [],
         createdAt: serverTimestamp(),
         userId: authFBConfig.lastNotifiedUid,
@@ -90,7 +108,7 @@ const Modal = ({ setGameInfo, gameInfo, searchParam }) => {
           gameDate: gameInfo.date,
           gameReview: gameInfo.review.trim(),
           gameStatus: gameInfo.gameStatus,
-          gameTotalTime: parseFloat(gameInfo.gameTotalTime),
+          gameTotalTime: parseFloat(gameInfo.gameTotalTime).toFixed(1),
           screenshots: [],
           createdAt: serverTimestamp(),
           userId: authFBConfig.lastNotifiedUid,
@@ -105,7 +123,7 @@ const Modal = ({ setGameInfo, gameInfo, searchParam }) => {
           gameDate: gameInfo.date,
           gameReview: gameInfo.review.trim(),
           gameStatus: gameInfo.gameStatus,
-          gameTotalTime: parseFloat(gameInfo.gameTotalTime),
+          gameTotalTime: parseFloat(gameInfo.gameTotalTime).toFixed(1),
         });
         closeModal();
       } else {
@@ -130,6 +148,7 @@ const Modal = ({ setGameInfo, gameInfo, searchParam }) => {
     await deleteDoc(gameDocRef);
     dispatch(modalFunc());
   };
+  // console.log(gameInfo);
   return (
     <>
       {toggleWarningModal ? (
@@ -188,76 +207,46 @@ const Modal = ({ setGameInfo, gameInfo, searchParam }) => {
               <form className="p-4 md:p-5" onSubmit={(e) => uploadToFirestore(e)}>
                 <div className="grid gap-4 mb-4 grid-cols-2">
                   <div className="col-span-2">
-                    <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                      Oyun İsmi *
-                    </label>
-                    <input
+                    <div className="flex justify-between items-center  mb-2">
+                      <label htmlFor="name" className="block text-sm font-medium text-gray-900 dark:text-white">
+                        Oyun İsmi *
+                      </label>
+                      <button
+                        className="text-sm font-medium text-gray-900 dark:text-white"
+                        onClick={() => setApiSearch(!apiSearch)}
+                      >
+                        {apiSearch ? "Otomatik Aramayı Kapat" : "Otomatik Aramayı Aç"}
+                      </button>
+                    </div>
+                    <GameModalInput
                       type="text"
                       name="name"
-                      id="name"
-                      value={gameInfo.name}
-                      placeholder="Oyun İsmi (Zorunlu)"
-                      onChange={(e) => onchangeFunc(e)}
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                      required
+                      value={gameInfo}
+                      onchangeFunc={onchangeFunc}
+                      apiSearch={apiSearch}
                     />
                   </div>
                   <div className="col-span-2">
                     <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                       Oyun Fotoğraf Url
                     </label>
-                    <input
-                      type="text"
-                      name="gamePhoto"
-                      id="gamePhoto"
-                      value={gameInfo.gamePhoto}
-                      placeholder="Oyun Fotoğraf Url (İsteğe Bağlı)"
-                      onChange={(e) => onchangeFunc(e)}
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                    />
+                    <GameModalInput type="text" name="gamePhoto" value={gameInfo} onchangeFunc={onchangeFunc} />
                   </div>
                   <div className="col-span-2 sm:col-span-1">
                     <label htmlFor="price" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                       Toplam Oynama Saati
                     </label>
-                    <input
-                      type="number"
-                      name="gameTotalTime"
-                      id="gameTotalTime"
-                      onChange={(e) => onchangeFunc(e)}
-                      value={gameInfo.gameTotalTime}
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                      placeholder="158"
-                    />
+                    <GameModalInput type="text" name="gameTotalTime" value={gameInfo} onchangeFunc={onchangeFunc} />
                   </div>
                   <div className="col-span-2 sm:col-span-1">
                     <label htmlFor="category" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                       Platform
                     </label>
-                    <select
-                      id="platform"
-                      name="platform"
-                      onChange={(e) => onchangeFunc(e)}
-                      value={gameInfo.platform}
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                    >
-                      <option value="Steam">Steam</option>
-                      <option value="Epic Games">Epic Games</option>
-                      <option value="Ubisoft">Ubisoft</option>
-                      <option value="Xbox(Pc)">Xbox(PC)</option>
-                      <option value="EA Games">EA Games</option>
-                      <option value="Ubisoft">Ubisoft</option>
-                      <option value="Torrent">Torrent</option>
-                      <option value="Playstation">Playstation</option>
-                      <option value="Xbox Series">Xbox Series</option>
-                      <option value="Nintendo">Nintendo</option>
-                      <option value="Mobile">Mobile</option>
-                      <option value="Diğer Platformlar">Diğer Platformlar</option>
-                    </select>
+                    <GameModalSelect name="platform" value={gameInfo} onchangeFunc={onchangeFunc} options={platforms} />
                   </div>
                   <div className="col-span-2 sm:col-span-1">
                     <label htmlFor="category" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                      Puan{" "}
+                      Puan * &nbsp;
                       <a data-tooltip-id="my-tooltip" className="text-orange-300">
                         (?)
                       </a>
@@ -301,32 +290,19 @@ const Modal = ({ setGameInfo, gameInfo, searchParam }) => {
                     <label htmlFor="category" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                       Oyun Durumu
                     </label>
-                    <select
-                      id="gameStatus"
+                    <GameModalSelect
                       name="gameStatus"
-                      onChange={(e) => onchangeFunc(e)}
-                      value={gameInfo.gameStatus}
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                    >
-                      <option value="Bitirildi">Bitirildi</option>
-                      <option value="Bırakıldı">Bırakıldı</option>
-                      <option value="Bitirilecek">Bitirilecek</option>
-                      <option value="Aktif Oynanılıyor">Aktif Oynanılıyor</option>
-                    </select>
+                      value={gameInfo}
+                      onchangeFunc={onchangeFunc}
+                      options={gameStatus}
+                    />
                   </div>
 
                   <div className="col-span-2">
                     <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                       Son Oynama Tarihi
                     </label>
-                    <input
-                      type="date"
-                      name="date"
-                      id="date"
-                      value={gameInfo.date}
-                      onChange={(e) => onchangeFunc(e)}
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                    />
+                    <GameModalInput type="date" name="date" value={gameInfo} onchangeFunc={onchangeFunc} />
                   </div>
                   <div className="col-span-2">
                     <label
@@ -335,15 +311,7 @@ const Modal = ({ setGameInfo, gameInfo, searchParam }) => {
                     >
                       Oyun İncelemesi
                     </label>
-                    <textarea
-                      name="review"
-                      value={gameInfo.review}
-                      id="review"
-                      onChange={(e) => onchangeFunc(e)}
-                      rows={4}
-                      className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      placeholder="Oyun İncelemenizi Buraya Yazınız (İsteğe Bağlı)"
-                    ></textarea>
+                    <GameModalTextArea type="date" name="review" value={gameInfo} onchangeFunc={onchangeFunc} />
                   </div>
                 </div>
                 <div>{message && <div className="text-rose-600">{message}</div>}</div>
@@ -376,4 +344,4 @@ const Modal = ({ setGameInfo, gameInfo, searchParam }) => {
   );
 };
 
-export default Modal;
+export default GameModal;

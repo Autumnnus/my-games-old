@@ -11,6 +11,7 @@ import { toggleUserSettingsModal } from "../../redux/modalSlice";
 import logo from "../../assets/logo.png";
 import WarningDeleteUser from "./WarningDeleteUser";
 import UserTableRowSkeleton from "../skeleton/UserTableRowSkeleton";
+import { fetchIGDBGameData } from "../../config/rawgConfig";
 
 const UserList = () => {
   const dispatch = useDispatch();
@@ -39,7 +40,7 @@ const UserList = () => {
   const adminUsers = users.filter((user) => user.data.role === "admin");
   const regularUsers = users.filter((user) => user.data.role !== "admin");
   const sortedUsers = [...adminUsers, ...regularUsers.sort((a, b) => a.data.name.localeCompare(b.data.name))];
-
+  fetchIGDBGameData();
   useEffect(() => {
     fetchUsers();
     // eslint-disable-next-line react-hooks/exhaustive-deps

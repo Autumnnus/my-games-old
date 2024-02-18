@@ -7,7 +7,7 @@ import { db } from "../../config/firebaseConfig";
 import { modalFunc, toggleSSModal, togglefullSSModal } from "../../redux/modalSlice";
 import ScreenShotModal from "../modal/ScreenShotModal";
 import ImageModal from "../modal/ImageModal";
-import Modal from "../modal/Modal";
+import GameModal from "../modal/game-modal/GameModal";
 import CircleRightComp from "../CircleRightComp";
 import GameDetailSkeleton from "../skeleton/GameDetailSkeleton";
 
@@ -38,7 +38,6 @@ const GameDetails = () => {
     review: "",
     gameStatus: "Bitirildi",
     gameTotalTime: null,
-    dateEnd: "",
   });
 
   const [showMore, setShowMore] = useState(false);
@@ -95,7 +94,6 @@ const GameDetails = () => {
       review: gameData?.data.gameReview,
       gameStatus: gameData?.data.gameStatus,
       gameTotalTime: gameData?.data.gameTotalTime,
-      dateEnd: gameData?.data.dateEnd,
     });
     navigate(`?edit=${gameData?.id}`);
   };
@@ -105,7 +103,7 @@ const GameDetails = () => {
   return (
     <div className="sm:container mx-auto mt-8">
       {fullSSModal && <ImageModal imgModalUrl={imgModalUrl} imgModalName={imgModalName}></ImageModal>}
-      {modal && <Modal setGameInfo={setGameInfo} gameInfo={gameInfo}></Modal>}
+      {modal && <GameModal setGameInfo={setGameInfo} gameInfo={gameInfo}></GameModal>}
       <div className="flex flex-col lg:flex-row text-white">
         <div className="flex-shrink-0 md:w-1/4">
           {gameData.data.gamePhoto === "" ? (
