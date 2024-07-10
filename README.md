@@ -1,8 +1,14 @@
+### THIS PROJECT WAS ABANDONED
+It was Frontend- BaaS project. I decided to create my own backend and want to upgrade JS to TS. Also I had many errors in the structure and code. So I decided to do a new project
+
+[New Project](https://github.com/VectortheGreat/my-games)
+
+
 # My Games
 
 This is a React Javascript Project about gamers who will store their game statics freely.
 
-- [Demo](https://my-games.netlify.app/)
+- [Demo](https://my-games-old.netlify.app/)
 
 ## Features:
 
