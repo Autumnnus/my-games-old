@@ -1,7 +1,7 @@
 ### THIS PROJECT WAS ABANDONED
 It was Frontend- BaaS project. I decided to create my own backend and want to upgrade JS to TS. Also I had many errors in the structure and code. So I decided to do a new project
 
-[New Project](https://github.com/VectortheGreat/my-games)
+[New Project](https://github.com/Autumnnus/my-games)
 
 
 # My Games
